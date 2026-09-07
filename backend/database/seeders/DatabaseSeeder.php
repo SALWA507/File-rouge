@@ -10,7 +10,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-      
+
         User::create([
             'name' => 'Admin BioMaintenix',
             'email' => 'admin@clinique.com',
