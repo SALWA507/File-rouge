@@ -1,5 +1,6 @@
 import { useState } from "react";
 import loginImage from "../assets/login-medical.png";
+import { useNavigate } from "react-router-dom";
 import {
   Mail,
   Lock,
@@ -9,6 +10,7 @@ import {
 } from "lucide-react";
 
 function Login() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -45,76 +47,14 @@ function Login() {
 
          
           <div className="flex-1 flex items-center justify-center">
-
-            <div className="w-60 h-60 rounded-[35px] bg-white/20 flex items-center justify-center">
-
-             
-              <svg
-                width="150"
-                height="150"
-                viewBox="0 0 150 150"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M27 83C45 70 58 69 76 70C94 71 109 67 123 57"
-                  stroke="#4AC9C1"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                />
-
-                <path
-                  d="M50 71C44 73 37 77 31 82"
-                  stroke="#4AC9C1"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                />
-
-                <path
-                  d="M62 108C72 98 76 88 76 78"
-                  stroke="#4AC9C1"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                />
-
-                <path
-                  d="M61 96L73 107"
-                  stroke="#4AC9C1"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                />
-
-                <path
-                  d="M102 45C92 55 86 68 84 82"
-                  stroke="#4AC9C1"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                />
-
-                <path
-                  d="M87 69L101 81"
-                  stroke="#4AC9C1"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                />
-
-                <path
-                  d="M47 78L53 86"
-                  stroke="#4AC9C1"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                />
-
-                <path
-                  d="M95 65L103 72"
-                  stroke="#4AC9C1"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                />
-              </svg>
-
-            </div>
-          </div>
+  <div className="w-72 h-72 rounded-[35px] bg-white/10 flex items-center justify-center p-8">
+    <img
+      src={loginImage}
+      alt="BioMaintenix"
+      className="w-full h-full object-contain"
+    />
+  </div>
+</div>
 
           <div className="pb-2">
             <h2 className="text-lg font-bold text-[#25BDB5]">
@@ -151,16 +91,12 @@ function Login() {
 
           </div>
 
-          {/* Welcome */}
           <h3 className="text-center text-xl font-bold text-[#172033] mb-5">
             BIENVENUE SUR BIOMAINTENIX
           </h3>
 
-
-          {/* ================= FORM ================= */}
           <form onSubmit={handleSubmit}>
 
-            {/* Email */}
             <div className="mb-7">
 
               <label className="block text-base text-[#202020] mb-2">
@@ -260,7 +196,6 @@ function Login() {
             </div>
 
 
-            {/* Remember + Forgot */}
             <div className="flex items-center justify-between mb-5 text-xs">
 
               <label className="flex items-center gap-2 cursor-pointer">
@@ -293,8 +228,6 @@ function Login() {
 
             </div>
 
-
-            {/* Login button */}
             <button
               type="submit"
               className="
@@ -315,7 +248,6 @@ function Login() {
           </form>
 
 
-          {/* OR */}
           <div className="flex items-center gap-5 my-6">
 
             <div className="flex-1 h-px bg-gray-300"></div>
@@ -328,27 +260,24 @@ function Login() {
 
           </div>
 
+        <button
+  type="button"
+  onClick={() => navigate("/register")}
+  className="
+    w-full
+    h-10
+    rounded-lg
+    border
+    border-gray-300
+    text-[#13B8B0]
+    font-medium
+    hover:bg-gray-50
+    transition
+  "
+>
+  Créer un compte
+</button>
 
-          {/* SSO */}
-          <button
-            type="button"
-            className="
-              w-full
-              h-10
-              rounded-lg
-              border
-              border-gray-300
-              text-[#13B8B0]
-              font-medium
-              hover:bg-gray-50
-              transition
-            "
-          >
-            connexion avec SSO
-          </button>
-
-
-          {/* Support */}
           <p className="text-center text-xs text-gray-600 mt-5">
 
             Besoin d'aide?
