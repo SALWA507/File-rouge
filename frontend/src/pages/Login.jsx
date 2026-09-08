@@ -24,7 +24,7 @@ function Login() {
     <div className="min-h-screen bg-white flex">
 
      
-      <div className="hidden lg:flex lg:w-1/2 bg-[#0F7C7C] text-white relative overflow-hidden">
+      <div className="flex w-1\2 bg-[#0F7C7C] text-white relative overflow-hidden">
 
         <div className="w-full px-14 py-10 flex flex-col">
 
