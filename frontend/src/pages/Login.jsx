@@ -1,0 +1,373 @@
+import { useState } from "react";
+import loginImage from "../assets/login-medical.png";
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  Stethoscope,
+} from "lucide-react";
+
+function Login() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    console.log("Login submitted");
+  };
+
+  return (
+    <div className="min-h-screen bg-white flex">
+
+     
+      <div className="hidden lg:flex lg:w-1/2 bg-[#0F7C7C] text-white relative overflow-hidden">
+
+        <div className="w-full px-14 py-10 flex flex-col">
+
+        
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+              <Stethoscope size={24} />
+            </div>
+
+            <h1 className="text-2xl font-bold">
+              BioMaintenix
+            </h1>
+          </div>
+
+       
+          <p className="mt-3 text-lg text-white/80 max-w-md leading-7">
+            Plateforme de gestion des équipements
+            biomédicaux
+          </p>
+
+         
+          <div className="flex-1 flex items-center justify-center">
+
+            <div className="w-60 h-60 rounded-[35px] bg-white/20 flex items-center justify-center">
+
+             
+              <svg
+                width="150"
+                height="150"
+                viewBox="0 0 150 150"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M27 83C45 70 58 69 76 70C94 71 109 67 123 57"
+                  stroke="#4AC9C1"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+
+                <path
+                  d="M50 71C44 73 37 77 31 82"
+                  stroke="#4AC9C1"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+
+                <path
+                  d="M62 108C72 98 76 88 76 78"
+                  stroke="#4AC9C1"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+
+                <path
+                  d="M61 96L73 107"
+                  stroke="#4AC9C1"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+
+                <path
+                  d="M102 45C92 55 86 68 84 82"
+                  stroke="#4AC9C1"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+
+                <path
+                  d="M87 69L101 81"
+                  stroke="#4AC9C1"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+
+                <path
+                  d="M47 78L53 86"
+                  stroke="#4AC9C1"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+
+                <path
+                  d="M95 65L103 72"
+                  stroke="#4AC9C1"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+              </svg>
+
+            </div>
+          </div>
+
+          <div className="pb-2">
+            <h2 className="text-lg font-bold text-[#25BDB5]">
+              PRÉCISION & TRAÇABILITÉ
+            </h2>
+
+            <p className="mt-2 text-sm text-white/70 leading-5 max-w-lg">
+              Garantissez la conformité de vos dispositifs médicaux
+              selon les normes cliniques internationales
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-10">
+
+        <div className="w-full max-w-md">
+
+       
+          <div className="flex justify-center items-center gap-2 mb-3">
+
+            <div className="w-9 h-9 rounded-full bg-[#E6F8F7] flex items-center justify-center">
+              <Stethoscope
+                size={22}
+                className="text-[#0FA9A2]"
+              />
+            </div>
+
+            <h2 className="text-2xl font-bold text-[#172033]">
+              BIOMAINTENIX
+            </h2>
+
+          </div>
+
+          {/* Welcome */}
+          <h3 className="text-center text-xl font-bold text-[#172033] mb-5">
+            BIENVENUE SUR BIOMAINTENIX
+          </h3>
+
+
+          {/* ================= FORM ================= */}
+          <form onSubmit={handleSubmit}>
+
+            {/* Email */}
+            <div className="mb-7">
+
+              <label className="block text-base text-[#202020] mb-2">
+                Adresse e-mail
+              </label>
+
+              <div className="relative">
+
+                <Mail
+                  size={22}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+
+                <input
+                  type="email"
+                  placeholder="nom@clinique.com"
+                  className="
+                    w-full
+                    h-12
+                    pl-12
+                    pr-4
+                    border
+                    border-gray-300
+                    rounded-lg
+                    outline-none
+                    text-gray-800
+                    placeholder-gray-400
+                    focus:border-[#12B8B0]
+                    focus:ring-2
+                    focus:ring-[#12B8B0]/20
+                  "
+                  required
+                />
+
+              </div>
+
+            </div>
+
+
+            <div className="mb-3">
+
+              <label className="block text-base text-[#202020] mb-2">
+                mot de passe
+              </label>
+
+              <div className="relative">
+
+                <Lock
+                  size={22}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  className="
+                    w-full
+                    h-12
+                    pl-12
+                    pr-12
+                    border
+                    border-gray-300
+                    rounded-lg
+                    outline-none
+                    text-gray-800
+                    placeholder-gray-400
+                    focus:border-[#12B8B0]
+                    focus:ring-2
+                    focus:ring-[#12B8B0]/20
+                  "
+                  required
+                />
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShowPassword(!showPassword)
+                  }
+                  className="
+                    absolute
+                    right-4
+                    top-1/2
+                    -translate-y-1/2
+                    text-gray-400
+                    hover:text-gray-600
+                  "
+                >
+                  {showPassword ? (
+                    <EyeOff size={20} />
+                  ) : (
+                    <Eye size={20} />
+                  )}
+                </button>
+
+              </div>
+
+            </div>
+
+
+            {/* Remember + Forgot */}
+            <div className="flex items-center justify-between mb-5 text-xs">
+
+              <label className="flex items-center gap-2 cursor-pointer">
+
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) =>
+                    setRememberMe(e.target.checked)
+                  }
+                  className="
+                    w-4
+                    h-4
+                    accent-[#13B8B0]
+                  "
+                />
+
+                <span className="text-gray-600">
+                  Se souvenir de moi
+                </span>
+
+              </label>
+
+              <button
+                type="button"
+                className="text-[#13B8B0] hover:underline"
+              >
+                mot de passe oublié?
+              </button>
+
+            </div>
+
+
+            {/* Login button */}
+            <button
+              type="submit"
+              className="
+                w-full
+                h-12
+                rounded-lg
+                bg-[#13B8B0]
+                text-white
+                font-medium
+                hover:bg-[#0FA59E]
+                transition
+                duration-200
+              "
+            >
+              Se connecter
+            </button>
+
+          </form>
+
+
+          {/* OR */}
+          <div className="flex items-center gap-5 my-6">
+
+            <div className="flex-1 h-px bg-gray-300"></div>
+
+            <span className="text-sm text-gray-400">
+              ou
+            </span>
+
+            <div className="flex-1 h-px bg-gray-300"></div>
+
+          </div>
+
+
+          {/* SSO */}
+          <button
+            type="button"
+            className="
+              w-full
+              h-10
+              rounded-lg
+              border
+              border-gray-300
+              text-[#13B8B0]
+              font-medium
+              hover:bg-gray-50
+              transition
+            "
+          >
+            connexion avec SSO
+          </button>
+
+
+          {/* Support */}
+          <p className="text-center text-xs text-gray-600 mt-5">
+
+            Besoin d'aide?
+
+            <button
+              type="button"
+              className="ml-1 text-[#13B8B0] hover:underline"
+            >
+              Contactez le support
+            </button>
+
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+  );
+}
+
+export default Login;
