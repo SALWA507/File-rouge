@@ -1,6 +1,7 @@
 import { useState } from "react";
 import loginImage from "../assets/login-medical.png";
 import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 import {
   Mail,
   Lock,
@@ -11,15 +12,47 @@ import {
 
 function Login() {
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const[password,setPassword]=useState("");
+  const[showPassword,setShowPassword]=useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const[loading,setLoading]=useState(false);
+  const[message,setMessage]=useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    console.log("Login submitted");
-  };
+  setLoading(true);
+  setMessage("");
 
+  try {
+    const response = await api.post("/login", {
+      email,
+      password,
+    });
+
+    localStorage.setItem("token", response.data.token);
+    localStorage.setItem("user", JSON.stringify(response.data.user));
+
+    setMessage("Connexion réussie");
+
+    navigate("/dashboard");
+
+  } catch (error) {
+
+    if (error.response) {
+      setMessage(
+        error.response.data.message || "Les identifiants sont incorrects"
+      );
+    } else {
+      setMessage("Impossible de contacter le serveur");
+    }
+
+  } finally {
+    setLoading(false);
+  }
+};
+   
   return (
     <div className="min-h-screen bg-white flex">
 
