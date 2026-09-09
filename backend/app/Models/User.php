@@ -22,4 +22,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function maintenances(){
+        return $this->hasMany(Maintenance::class,'created_by');
+
+    }
+public function interventions(){
+    return $this->hasMany(Intervention::class,'technician_id');
+}
+public function alerts(){
+    return $this->hasMany(Alert::class);
+}
 }
