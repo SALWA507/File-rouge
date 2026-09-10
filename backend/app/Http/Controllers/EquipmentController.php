@@ -37,17 +37,47 @@ class EquipmentController extends Controller
     }
 
     public function show(string $id)
-    {
+{
+    $equipment = Equipment::find($id);
 
+    if (!$equipment) {
+        return response()->json([
+            'message' => 'Équipement introuvable'
+        ], 404);
     }
 
+    return response()->json($equipment);
+}
     public function update(Request $request, string $id)
-    {
+{
+    $equipment = Equipment::find($id);
 
+    if (!$equipment) {
+        return response()->json([
+            'message' => 'Équipement introuvable'
+        ], 404);
     }
 
+    $validated = $request->validate([
+        'name' => 'sometimes|required|string|max:255',
+        'reference' => 'sometimes|required|string|max:255|unique:equipment,reference,' . $id,
+        'brand' => 'nullable|string|max:255',
+        'model' => 'nullable|string|max:255',
+        'serialNumber' => 'sometimes|required|string|max:255|unique:equipment,serialNumber,' . $id,
+        'location' => 'sometimes|required|string|max:255',
+        'status' => 'nullable|string|max:255',
+        'installationDate' => 'nullable|date',
+    ]);
+
+    $equipment->update($validated);
+
+    return response()->json([
+        'message' => 'Équipement modifié avec succès',
+        'equipment' => $equipment,
+    ]);
+}
     public function destroy(string $id)
     {
-      
+
     }
 }
