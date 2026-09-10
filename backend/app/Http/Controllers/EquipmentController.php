@@ -77,7 +77,19 @@ class EquipmentController extends Controller
     ]);
 }
     public function destroy(string $id)
-    {
+{
+    $equipment = Equipment::find($id);
 
+    if (!$equipment) {
+        return response()->json([
+            'message' => 'Équipement introuvable'
+        ], 404);
     }
+
+    $equipment->delete();
+
+    return response()->json([
+        'message' => 'Équipement supprimé avec succès'
+    ]);
+}
 }
