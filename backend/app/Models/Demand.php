@@ -9,6 +9,7 @@ class Demand extends Model
     protected $fillable = [
         'user_id',
         'equipment_id',
+         'technician_id',
         'title',
         'description',
         'priority',
@@ -24,4 +25,8 @@ class Demand extends Model
     {
         return $this->belongsTo(Equipment::class);
     }
+    public function technician()
+{
+    return $this->belongsTo(User::class, 'technician_id');
+}
 }

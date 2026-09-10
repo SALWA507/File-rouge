@@ -9,33 +9,37 @@ class DemandController extends Controller
 {
     public function index()
     {
-        $demands = Demand::with(['user', 'equipment'])->get();
+       $demands = Demand::with(['user', 'equipment', 'technician'])->get();
 
         return response()->json($demands);
     }
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'equipment_id' => 'required|exists:equipment,id',
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'priority' => 'nullable|in:low,normal,high,urgent',
-            'status' => 'nullable|in:pending,assigned,in_progress,resolved,rejected',
-        ]);
+{
+    $validated = $request->validate([
+        'equipment_id' => 'required|exists:equipment,id',
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'priority' => 'nullable|in:low,normal,high,urgent',
+    ]);
 
-        $demand = Demand::create($validated);
+    $demand = Demand::create([
+        'user_id' => $request->user()->id,
+        'equipment_id' => $validated['equipment_id'],
+        'title' => $validated['title'],
+        'description' => $validated['description'],
+        'priority' => $validated['priority'] ?? 'normal',
+        'status' => 'pending',
+    ]);
 
-        return response()->json([
-            'message' => 'Demande créée avec succès',
-            'demand' => $demand,
-        ], 201);
-    }
-
+    return response()->json([
+        'message' => 'Demande créée avec succès',
+        'demand' => $demand->load(['user', 'equipment', 'technician']),
+    ], 201);
+}
     public function show(string $id)
     {
-        $demand = Demand::with(['user', 'equipment'])->find($id);
+       $demand = Demand::with(['user', 'equipment', 'technician'])->find($id);
 
         if (!$demand) {
             return response()->json([
@@ -58,6 +62,7 @@ class DemandController extends Controller
 
         $validated = $request->validate([
             'equipment_id' => 'sometimes|required|exists:equipment,id',
+            'technician_id' => 'nullable|exists:users,id',
             'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string',
             'priority' => 'nullable|in:low,normal,high,urgent',
