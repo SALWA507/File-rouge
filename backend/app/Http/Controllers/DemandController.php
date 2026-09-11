@@ -7,12 +7,24 @@ use Illuminate\Http\Request;
 
 class DemandController extends Controller
 {
-    public function index()
-    {
-       $demands = Demand::with(['user', 'equipment', 'technician'])->get();
+    public function index(Request $request)
+{
+    $user = $request->user();
 
-        return response()->json($demands);
+    if ($user->role === 'admin') {
+        $demands = Demand::with(['user', 'equipment', 'technician'])->get();
+    } elseif ($user->role === 'technicien') {
+        $demands = Demand::with(['user', 'equipment', 'technician'])
+            ->where('technician_id', $user->id)
+            ->get();
+    } else {
+        $demands = Demand::with(['user', 'equipment', 'technician'])
+            ->where('user_id', $user->id)
+            ->get();
     }
+
+    return response()->json($demands);
+}
 
     public function store(Request $request)
 {
@@ -37,18 +49,30 @@ class DemandController extends Controller
         'demand' => $demand->load(['user', 'equipment', 'technician']),
     ], 201);
 }
-    public function show(string $id)
-    {
-       $demand = Demand::with(['user', 'equipment', 'technician'])->find($id);
+    public function show(Request $request, string $id)
+{
+    $demand = Demand::with(['user', 'equipment', 'technician'])->find($id);
 
-        if (!$demand) {
-            return response()->json([
-                'message' => 'Demande introuvable'
-            ], 404);
-        }
-
-        return response()->json($demand);
+    if (!$demand) {
+        return response()->json([
+            'message' => 'Demande introuvable'
+        ], 404);
     }
+
+    $user = $request->user();
+
+    if (
+        $user->role !== 'admin' &&
+        !($user->role === 'technicien' && $demand->technician_id === $user->id) &&
+        !($user->role === 'personnel' && $demand->user_id === $user->id)
+    ) {
+        return response()->json([
+            'message' => 'Accès interdit'
+        ], 403);
+    }
+
+    return response()->json($demand);
+}
 
     public function update(Request $request, string $id)
     {
@@ -59,6 +83,11 @@ class DemandController extends Controller
                 'message' => 'Demande introuvable'
             ], 404);
         }
+        if ($request->user()->role !== 'admin') {
+    return response()->json([
+        'message' => 'Accès interdit'
+    ], 403);
+}
 
         $validated = $request->validate([
             'equipment_id' => 'sometimes|required|exists:equipment,id',
