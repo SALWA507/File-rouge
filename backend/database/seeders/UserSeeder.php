@@ -10,9 +10,7 @@ use App\Models\User;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+   
     public function run(): void
     {
           User::create([
@@ -37,5 +35,3 @@ class UserSeeder extends Seeder
         ]);
     }
 }
-
-

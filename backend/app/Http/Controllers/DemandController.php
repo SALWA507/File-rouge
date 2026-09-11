@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Demand;
 use Illuminate\Http\Request;
-
+use App\Models\User;
 class DemandController extends Controller
 {
     public function index(Request $request)
@@ -26,8 +26,15 @@ class DemandController extends Controller
     return response()->json($demands);
 }
 
-    public function store(Request $request)
+public function store(Request $request)
 {
+
+    if ($request->user()->role !== 'personnel') {
+        return response()->json([
+            'message' => 'Seul le personnel peut créer une demande'
+        ], 403);
+    }
+
     $validated = $request->validate([
         'equipment_id' => 'required|exists:equipment,id',
         'title' => 'required|string|max:255',
@@ -46,7 +53,11 @@ class DemandController extends Controller
 
     return response()->json([
         'message' => 'Demande créée avec succès',
-        'demand' => $demand->load(['user', 'equipment', 'technician']),
+        'demand' => $demand->load([
+            'user',
+            'equipment',
+            'technician'
+        ]),
     ], 201);
 }
     public function show(Request $request, string $id)
@@ -91,7 +102,17 @@ class DemandController extends Controller
 
         $validated = $request->validate([
             'equipment_id' => 'sometimes|required|exists:equipment,id',
-            'technician_id' => 'nullable|exists:users,id',
+            'technician_id' => [
+    'nullable',
+    'exists:users,id',
+    function ($attribute, $value, $fail) {
+        if ($value && !User::where('id', $value)
+            ->where('role', 'technicien')
+            ->exists()) {
+            $fail('Lutilisateur sélectionné nest pas un technicien.');
+        }
+    },
+],
             'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string',
             'priority' => 'nullable|in:low,normal,high,urgent',
