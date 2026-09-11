@@ -55,60 +55,85 @@ class AlertController extends Controller
         ]),
     ], 201);
 }
-    public function show(string $id)
-    {
-        $alert = Alert::with(['user', 'equipment'])->find($id);
+    public function show(Request $request, string $id)
+{
+    $alert = Alert::with(['user', 'equipment'])->find($id);
 
-        if (!$alert) {
-            return response()->json([
-                'message' => 'Alerte introuvable'
-            ], 404);
-        }
-
-        return response()->json($alert);
+    if (!$alert) {
+        return response()->json([
+            'message' => 'Alerte introuvable'
+        ], 404);
     }
+
+    $user = $request->user();
+
+    if (
+        $user->role !== 'admin' &&
+        $alert->user_id !== $user->id
+    ) {
+        return response()->json([
+            'message' => 'Accès interdit'
+        ], 403);
+    }
+
+    return response()->json($alert);
+}
 
     public function update(Request $request, string $id)
-    {
-        $alert = Alert::find($id);
+{
+    $alert = Alert::find($id);
 
-        if (!$alert) {
-            return response()->json([
-                'message' => 'Alerte introuvable'
-            ], 404);
-        }
-
-        $validated = $request->validate([
-            'user_id' => 'nullable|exists:users,id',
-            'equipment_id' => 'nullable|exists:equipment,id',
-            'message' => 'sometimes|required|string',
-            'type' => 'sometimes|required|string|max:255',
-            'isRead' => 'nullable|boolean',
-        ]);
-
-        $alert->update($validated);
-
+    if (!$alert) {
         return response()->json([
-            'message' => 'Alerte modifiée avec succès',
-            'alert' => $alert,
-        ]);
+            'message' => 'Alerte introuvable'
+        ], 404);
     }
 
-    public function destroy(string $id)
-    {
-        $alert = Alert::find($id);
-
-        if (!$alert) {
-            return response()->json([
-                'message' => 'Alerte introuvable'
-            ], 404);
-        }
-
-        $alert->delete();
-
+    if ($request->user()->role !== 'admin') {
         return response()->json([
-            'message' => 'Alerte supprimée avec succès'
-        ]);
+            'message' => 'Accès interdit'
+        ], 403);
     }
+
+    $validated = $request->validate([
+        'user_id' => 'nullable|exists:users,id',
+        'equipment_id' => 'nullable|exists:equipment,id',
+        'message' => 'sometimes|required|string',
+        'type' => 'sometimes|required|string|max:255',
+        'isRead' => 'nullable|boolean',
+    ]);
+
+    $alert->update($validated);
+
+    return response()->json([
+        'message' => 'Alerte modifiée avec succès',
+        'alert' => $alert->load([
+            'user',
+            'equipment'
+        ]),
+    ]);
+}
+    public function destroy(Request $request, string $id)
+{
+    $alert = Alert::find($id);
+
+    if (!$alert) {
+        return response()->json([
+            'message' => 'Alerte introuvable'
+        ], 404);
+    }
+
+    if ($request->user()->role !== 'admin') {
+        return response()->json([
+            'message' => 'Accès interdit'
+        ], 403);
+    }
+
+    $alert->delete();
+
+    return response()->json([
+        'message' => 'Alerte supprimée avec succès'
+    ]);
+}
 }
 
