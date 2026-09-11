@@ -101,14 +101,12 @@ class InterventionController extends Controller
 
     $user = $request->user();
 
-    // Personnel n'a pas le droit de modifier une intervention
     if ($user->role === 'personnel') {
         return response()->json([
             'message' => 'Accès interdit'
         ], 403);
     }
 
-    // Technicien peut modifier uniquement ses propres interventions
     if (
         $user->role === 'technicien' &&
         $intervention->technician_id !== $user->id
@@ -127,7 +125,6 @@ class InterventionController extends Controller
         'status' => 'nullable|in:assigned,in_progress,completed,cancelled',
     ]);
 
-    // Le technicien ne peut pas changer le technicien affecté
     if ($user->role === 'technicien') {
         unset($validated['technician_id']);
     }

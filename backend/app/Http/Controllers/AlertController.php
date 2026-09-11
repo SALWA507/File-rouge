@@ -33,7 +33,7 @@ class AlertController extends Controller
 {
     if ($request->user()->role !== 'admin') {
         return response()->json([
-            'message' => 'Seul l’administrateur peut créer une alerte'
+            'message' => 'Seul ladministrateur peut créer une alerte'
         ], 403);
     }
 
@@ -136,4 +136,3 @@ class AlertController extends Controller
     ]);
 }
 }
-
