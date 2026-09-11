@@ -32,23 +32,32 @@ class InterventionController extends Controller
     return response()->json($interventions);
 }
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'maintenance_id' => 'required|exists:maintenances,id',
-            'technician_id' => 'required|exists:users,id',
-            'startDate' => 'nullable|date',
-            'endDate' => 'nullable|date|after_or_equal:startDate',
-            'description' => 'nullable|string',
-            'status' => 'nullable|string|max:255',
-        ]);
-
-        $intervention = Intervention::create($validated);
-
+{
+    if ($request->user()->role !== 'admin') {
         return response()->json([
-            'message' => 'Intervention créée avec succès',
-            'intervention' => $intervention,
-        ], 201);
+            'message' => 'Seul l’administrateur peut créer une intervention'
+        ], 403);
     }
+
+    $validated = $request->validate([
+        'maintenance_id' => 'required|exists:maintenances,id',
+        'technician_id' => 'required|exists:users,id',
+        'startDate' => 'nullable|date',
+        'endDate' => 'nullable|date|after_or_equal:startDate',
+        'description' => 'nullable|string',
+        'status' => 'nullable|in:assigned,in_progress,completed,cancelled',
+    ]);
+
+    $intervention = Intervention::create($validated);
+
+    return response()->json([
+        'message' => 'Intervention créée avec succès',
+        'intervention' => $intervention->load([
+            'maintenance',
+            'technician'
+        ]),
+    ], 201);
+}
 
     public function show(string $id)
     {
