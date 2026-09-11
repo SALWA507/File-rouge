@@ -9,7 +9,10 @@ class MaintenanceController extends Controller
 {
     public function index()
     {
-        $maintenances = Maintenance::with(['equipment', 'creator'])->get();
+        $maintenances = Maintenance::with([
+            'equipment',
+            'creator'
+        ])->get();
 
         return response()->json($maintenances);
     }
@@ -18,25 +21,32 @@ class MaintenanceController extends Controller
     {
         $validated = $request->validate([
             'equipment_id' => 'required|exists:equipment,id',
-            'created_by' => 'required|exists:users,id',
             'type' => 'required|string|max:255',
             'description' => 'required|string',
             'plannedDate' => 'required|date',
             'status' => 'nullable|string|max:255',
         ]);
 
+        $validated['created_by'] = $request->user()->id;
+
         $maintenance = Maintenance::create($validated);
 
         return response()->json([
             'message' => 'Maintenance créée avec succès',
-            'maintenance' => $maintenance,
+            'maintenance' => $maintenance->load([
+                'equipment',
+                'creator'
+            ]),
         ], 201);
     }
 
     public function show(string $id)
     {
-        $maintenance = Maintenance::with(['equipment', 'creator', 'interventions'])
-            ->find($id);
+        $maintenance = Maintenance::with([
+            'equipment',
+            'creator',
+            'interventions'
+        ])->find($id);
 
         if (!$maintenance) {
             return response()->json([
@@ -59,7 +69,6 @@ class MaintenanceController extends Controller
 
         $validated = $request->validate([
             'equipment_id' => 'sometimes|required|exists:equipment,id',
-            'created_by' => 'sometimes|required|exists:users,id',
             'type' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string',
             'plannedDate' => 'sometimes|required|date',
@@ -70,7 +79,10 @@ class MaintenanceController extends Controller
 
         return response()->json([
             'message' => 'Maintenance modifiée avec succès',
-            'maintenance' => $maintenance,
+            'maintenance' => $maintenance->load([
+                'equipment',
+                'creator'
+            ]),
         ]);
     }
 
