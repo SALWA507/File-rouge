@@ -106,20 +106,26 @@ class DemandController extends Controller
         ]);
     }
 
-    public function destroy(string $id)
-    {
-        $demand = Demand::find($id);
+   public function destroy(Request $request, string $id)
+{
+    $demand = Demand::find($id);
 
-        if (!$demand) {
-            return response()->json([
-                'message' => 'Demande introuvable'
-            ], 404);
-        }
-
-        $demand->delete();
-
+    if (!$demand) {
         return response()->json([
-            'message' => 'Demande supprimée avec succès'
-        ]);
+            'message' => 'Demande introuvable'
+        ], 404);
     }
+
+    if ($request->user()->role !== 'admin') {
+        return response()->json([
+            'message' => 'Accès interdit'
+        ], 403);
+    }
+
+    $demand->delete();
+
+    return response()->json([
+        'message' => 'Demande supprimée avec succès'
+    ]);
+}
 }
