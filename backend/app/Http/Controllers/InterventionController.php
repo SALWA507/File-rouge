@@ -59,19 +59,35 @@ class InterventionController extends Controller
     ], 201);
 }
 
-    public function show(string $id)
-    {
-        $intervention = Intervention::with(['maintenance', 'technician'])
-            ->find($id);
+    public function show(Request $request, string $id)
+{
+    $intervention = Intervention::with([
+        'maintenance',
+        'technician'
+    ])->find($id);
 
-        if (!$intervention) {
-            return response()->json([
-                'message' => 'Intervention introuvable'
-            ], 404);
-        }
-
-        return response()->json($intervention);
+    if (!$intervention) {
+        return response()->json([
+            'message' => 'Intervention introuvable'
+        ], 404);
     }
+
+    $user = $request->user();
+
+    if (
+        $user->role !== 'admin' &&
+        !(
+            $user->role === 'technicien' &&
+            $intervention->technician_id === $user->id
+        )
+    ) {
+        return response()->json([
+            'message' => 'Accès interdit'
+        ], 403);
+    }
+
+    return response()->json($intervention);
+}
 
     public function update(Request $request, string $id)
     {
