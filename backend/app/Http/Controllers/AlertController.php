@@ -7,31 +7,54 @@ use Illuminate\Http\Request;
 
 class AlertController extends Controller
 {
-    public function index()
-    {
-        $alerts = Alert::with(['user', 'equipment'])->get();
+   public function index(Request $request)
+{
+    $user = $request->user();
 
-        return response()->json($alerts);
+    if ($user->role === 'admin') {
+        $alerts = Alert::with(['user', 'equipment'])->get();
+    } elseif (
+        $user->role === 'technicien' ||
+        $user->role === 'personnel'
+    ) {
+        $alerts = Alert::with(['user', 'equipment'])
+            ->where('user_id', $user->id)
+            ->get();
+    } else {
+        return response()->json([
+            'message' => 'Accès interdit'
+        ], 403);
     }
+
+    return response()->json($alerts);
+}
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'user_id' => 'nullable|exists:users,id',
-            'equipment_id' => 'nullable|exists:equipment,id',
-            'message' => 'required|string',
-            'type' => 'required|string|max:255',
-            'isRead' => 'nullable|boolean',
-        ]);
-
-        $alert = Alert::create($validated);
-
+{
+    if ($request->user()->role !== 'admin') {
         return response()->json([
-            'message' => 'Alerte créée avec succès',
-            'alert' => $alert,
-        ], 201);
+            'message' => 'Seul l’administrateur peut créer une alerte'
+        ], 403);
     }
 
+    $validated = $request->validate([
+        'user_id' => 'nullable|exists:users,id',
+        'equipment_id' => 'nullable|exists:equipment,id',
+        'message' => 'required|string',
+        'type' => 'required|string|max:255',
+        'isRead' => 'nullable|boolean',
+    ]);
+
+    $alert = Alert::create($validated);
+
+    return response()->json([
+        'message' => 'Alerte créée avec succès',
+        'alert' => $alert->load([
+            'user',
+            'equipment'
+        ]),
+    ], 201);
+}
     public function show(string $id)
     {
         $alert = Alert::with(['user', 'equipment'])->find($id);
@@ -88,3 +111,4 @@ class AlertController extends Controller
         ]);
     }
 }
+

@@ -90,46 +90,79 @@ class InterventionController extends Controller
 }
 
     public function update(Request $request, string $id)
-    {
-        $intervention = Intervention::find($id);
+{
+    $intervention = Intervention::find($id);
 
-        if (!$intervention) {
-            return response()->json([
-                'message' => 'Intervention introuvable'
-            ], 404);
-        }
-
-        $validated = $request->validate([
-            'maintenance_id' => 'sometimes|required|exists:maintenances,id',
-            'technician_id' => 'sometimes|required|exists:users,id',
-            'startDate' => 'nullable|date',
-            'endDate' => 'nullable|date|after_or_equal:startDate',
-            'description' => 'nullable|string',
-            'status' => 'nullable|string|max:255',
-        ]);
-
-        $intervention->update($validated);
-
+    if (!$intervention) {
         return response()->json([
-            'message' => 'Intervention modifiée avec succès',
-            'intervention' => $intervention,
-        ]);
+            'message' => 'Intervention introuvable'
+        ], 404);
     }
 
-    public function destroy(string $id)
-    {
-        $intervention = Intervention::find($id);
+    $user = $request->user();
 
-        if (!$intervention) {
-            return response()->json([
-                'message' => 'Intervention introuvable'
-            ], 404);
-        }
-
-        $intervention->delete();
-
+    // Personnel n'a pas le droit de modifier une intervention
+    if ($user->role === 'personnel') {
         return response()->json([
-            'message' => 'Intervention supprimée avec succès'
-        ]);
+            'message' => 'Accès interdit'
+        ], 403);
     }
+
+    // Technicien peut modifier uniquement ses propres interventions
+    if (
+        $user->role === 'technicien' &&
+        $intervention->technician_id !== $user->id
+    ) {
+        return response()->json([
+            'message' => 'Accès interdit'
+        ], 403);
+    }
+
+    $validated = $request->validate([
+        'maintenance_id' => 'sometimes|required|exists:maintenances,id',
+        'technician_id' => 'sometimes|required|exists:users,id',
+        'startDate' => 'nullable|date',
+        'endDate' => 'nullable|date|after_or_equal:startDate',
+        'description' => 'nullable|string',
+        'status' => 'nullable|in:assigned,in_progress,completed,cancelled',
+    ]);
+
+    // Le technicien ne peut pas changer le technicien affecté
+    if ($user->role === 'technicien') {
+        unset($validated['technician_id']);
+    }
+
+    $intervention->update($validated);
+
+    return response()->json([
+        'message' => 'Intervention modifiée avec succès',
+        'intervention' => $intervention->load([
+            'maintenance',
+            'technician'
+        ]),
+    ]);
+}
+
+    public function destroy(Request $request, string $id)
+{
+    $intervention = Intervention::find($id);
+
+    if (!$intervention) {
+        return response()->json([
+            'message' => 'Intervention introuvable'
+        ], 404);
+    }
+
+    if ($request->user()->role !== 'admin') {
+        return response()->json([
+            'message' => 'Accès interdit'
+        ], 403);
+    }
+
+    $intervention->delete();
+
+    return response()->json([
+        'message' => 'Intervention supprimée avec succès'
+    ]);
+}
 }
