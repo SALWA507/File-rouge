@@ -13,7 +13,27 @@ class UserController extends Controller
 
         return response()->json($users);
     }
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255|unique:users,email',
+        'password' => 'required|string|min:8|confirmed',
+        'role' => 'required|in:admin,technicien,personnel',
+    ]);
 
+    $user = User::create($validated);
+
+    return response()->json([
+        'message' => 'Utilisateur créé avec succès',
+        'user' => $user->only([
+            'id',
+            'name',
+            'email',
+            'role'
+        ]),
+    ], 201);
+}
     public function show(string $id)
     {
         $user = User::select('id', 'name', 'email', 'role', 'created_at')
