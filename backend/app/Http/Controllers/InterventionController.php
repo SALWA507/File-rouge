@@ -7,13 +7,30 @@ use Illuminate\Http\Request;
 
 class InterventionController extends Controller
 {
-    public function index()
-    {
-        $interventions = Intervention::with(['maintenance', 'technician'])->get();
+   public function index(Request $request)
+{
+    $user = $request->user();
 
-        return response()->json($interventions);
+    if ($user->role === 'admin') {
+        $interventions = Intervention::with([
+            'maintenance',
+            'technician'
+        ])->get();
+    } elseif ($user->role === 'technicien') {
+        $interventions = Intervention::with([
+            'maintenance',
+            'technician'
+        ])
+            ->where('technician_id', $user->id)
+            ->get();
+    } else {
+        return response()->json([
+            'message' => 'Accès interdit'
+        ], 403);
     }
 
+    return response()->json($interventions);
+}
     public function store(Request $request)
     {
         $validated = $request->validate([
