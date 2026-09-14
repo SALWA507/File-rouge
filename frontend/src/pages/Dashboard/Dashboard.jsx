@@ -269,10 +269,31 @@ function Dashboard() {
                                                 ).toLocaleDateString("fr-FR")}
                                             </p>
 
-                                            <p className="text-xs text-gray-500 mt-1">
-                                                {maintenance.status}
-                                            </p>
-
+                                            <span
+    className={`inline-block px-3 py-1 rounded-full text-xs font-medium
+        ${
+            maintenance.status === "planned"
+                ? "bg-gray-200 text-gray-600"
+                : maintenance.status === "in_progress"
+                ? "bg-blue-200 text-blue-700"
+                : maintenance.status === "terminee"
+                ? "bg-green-200 text-green-700"
+                : maintenance.status === "urgent"
+                ? "bg-red-200 text-red-600"
+                : "bg-gray-200 text-gray-600"
+        }
+    `}
+>
+    {maintenance.status === "planned"
+        ? "Planifiée"
+        : maintenance.status === "in_progress"
+        ? "En cours"
+        : maintenance.status === "terminee"
+        ? "Terminée"
+        : maintenance.status === "urgent"
+        ? "Urgente"
+        : maintenance.status}
+</span>
                                         </div>
 
                                     </div>
@@ -345,9 +366,31 @@ function Dashboard() {
                         </p>
                     </div>
 
-                    <span className="text-xs font-medium text-[#13B8B0]">
-                        {intervention.status}
-                    </span>
+                    <span
+    className={`inline-block px-3 py-1 rounded-full text-xs 
+        ${
+            intervention.status === "planned"
+                ? "bg-gray-200 text-gray-600"
+                : intervention.status === "in_progress"
+                ? "bg-blue-200 text-blue-700"
+                : intervention.status === "terminee"
+                ? "bg-green-200 text-green-700"
+                : intervention.status === "urgent"
+                ? "bg-red-200 text-red-600"
+                : "bg-gray-200 text-gray-600"
+        }
+    `}
+>
+    {intervention.status === "planned"
+        ? "Planifiée"
+        : intervention.status === "in_progress"
+        ? "En cours"
+        : intervention.status === "terminee"
+        ? "Terminée"
+        : intervention.status === "urgent"
+        ? "Urgente"
+        : intervention.status}
+</span>
 
                 </div>
 
