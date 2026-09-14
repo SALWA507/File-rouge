@@ -1,5 +1,15 @@
 import { useEffect, useState } from "react";
+
 import api from "../../api";
+
+import Sidebar from "./Sidebar";
+
+import {
+    Monitor,
+    Wrench,
+    ClipboardList,
+    Bell,
+} from "lucide-react";
 
 function Dashboard() {
     const [data, setData] = useState(null);
@@ -23,35 +33,123 @@ function Dashboard() {
     }
 
     return (
-        <div>
-            <h1>Dashboard</h1>
+        <div className="flex min-h-screen bg-gray-50">
 
-            <p>Bienvenue sur BioMaintenix</p>
+            <Sidebar />
 
-            <div>
-                <h2>Équipements</h2>
-                <p>{data?.equipment}</p>
-            </div>
+            <main className="flex-1 min-h-screen bg-[#F8FAFC] p-8 text-gray-800">
 
-            <div>
-                <h2>Maintenances</h2>
-                <p>{data?.maintenances}</p>
-            </div>
+                <h1 className="text-3xl font-bold text-gray-800">
+                    Tableau de bord
+                </h1>
 
-            <div>
-                <h2>Interventions</h2>
-                <p>{data?.interventions}</p>
-            </div>
+                <p className="mt-2 text-gray-500">
+                    Bienvenue sur BioMaintenix. Voici l'état de vos dispositifs.
+                </p>
 
-            <div>
-                <h2>Alertes</h2>
-                <p>{data?.alerts}</p>
-            </div>
+                {/* KPI Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-8 w-full">
 
-            <div>
-                <h2>Alertes non lues</h2>
-                <p>{data?.unread_alerts}</p>
-            </div>
+                    {/* Équipements */}
+                    <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+                        <div className="flex items-center justify-between">
+
+                            <div>
+                                <p className="text-sm text-gray-500">
+                                    Équipements
+                                </p>
+
+                                <h2 className="text-3xl font-bold text-gray-800 mt-2">
+                                    {data?.equipment ?? 0}
+                                </h2>
+                            </div>
+
+                            <div className="w-12 h-12 rounded-lg bg-[#E6F8F7] flex items-center justify-center">
+                                <Monitor
+                                    size={24}
+                                    className="text-[#13B8B0]"
+                                />
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {/* Maintenances */}
+                    <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+                        <div className="flex items-center justify-between">
+
+                            <div>
+                                <p className="text-sm text-gray-500">
+                                    Maintenances
+                                </p>
+
+                                <h2 className="text-3xl font-bold text-gray-800 mt-2">
+                                    {data?.maintenances ?? 0}
+                                </h2>
+                            </div>
+
+                            <div className="w-12 h-12 rounded-lg bg-[#E6F8F7] flex items-center justify-center">
+                                <Wrench
+                                    size={24}
+                                    className="text-[#13B8B0]"
+                                />
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {/* Interventions */}
+                    <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+                        <div className="flex items-center justify-between">
+
+                            <div>
+                                <p className="text-sm text-gray-500">
+                                    Interventions
+                                </p>
+
+                                <h2 className="text-3xl font-bold text-gray-800 mt-2">
+                                    {data?.interventions ?? 0}
+                                </h2>
+                            </div>
+
+                            <div className="w-12 h-12 rounded-lg bg-[#E6F8F7] flex items-center justify-center">
+                                <ClipboardList
+                                    size={24}
+                                    className="text-[#13B8B0]"
+                                />
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {/* Alertes */}
+                    <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+                        <div className="flex items-center justify-between">
+
+                            <div>
+                                <p className="text-sm text-gray-500">
+                                    Alertes
+                                </p>
+
+                                <h2 className="text-3xl font-bold text-gray-800 mt-2">
+                                    {data?.alerts ?? 0}
+                                </h2>
+                            </div>
+
+                            <div className="w-12 h-12 rounded-lg bg-[#E6F8F7] flex items-center justify-center">
+                                <Bell
+                                    size={24}
+                                    className="text-[#13B8B0]"
+                                />
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </main>
+
         </div>
     );
 }
