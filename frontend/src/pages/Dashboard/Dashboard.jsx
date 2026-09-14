@@ -55,14 +55,14 @@ function Dashboard() {
                         <div className="flex items-center justify-between">
 
                             <div>
-                                <p className="text-sm text-gray-500">
-                                    Équipements
-                                </p>
+                                
+<p className="text-sm text-gray-500">
+    Total des équipements
+</p>
 
-                                <h2 className="text-3xl font-bold text-gray-800 mt-2">
-                                    {data?.equipment ?? 0}
-                                </h2>
-                            </div>
+<h2 className="text-3xl font-bold text-gray-800 mt-2">
+    {data?.equipment ?? 0}
+</h2>  </div>
 
                             <div className="w-12 h-12 rounded-lg bg-[#E6F8F7] flex items-center justify-center">
                                 <Monitor
@@ -79,13 +79,14 @@ function Dashboard() {
                         <div className="flex items-center justify-between">
 
                             <div>
-                                <p className="text-sm text-gray-500">
-                                    Maintenances
-                                </p>
+                                {/* Interventions en cours */}
+<p className="text-sm text-gray-500">
+    Interventions en cours
+</p>
 
-                                <h2 className="text-3xl font-bold text-gray-800 mt-2">
-                                    {data?.maintenances ?? 0}
-                                </h2>
+<h2 className="text-3xl font-bold text-gray-800 mt-2">
+    {data?.interventions_en_cours ?? 0}
+</h2>
                             </div>
 
                             <div className="w-12 h-12 rounded-lg bg-[#E6F8F7] flex items-center justify-center">
@@ -103,13 +104,15 @@ function Dashboard() {
                         <div className="flex items-center justify-between">
 
                             <div>
-                                <p className="text-sm text-gray-500">
-                                    Interventions
-                                </p>
+                               
+{/* Interventions terminées */}
+<p className="text-sm text-gray-500">
+    Interventions terminées
+</p>
 
-                                <h2 className="text-3xl font-bold text-gray-800 mt-2">
-                                    {data?.interventions ?? 0}
-                                </h2>
+<h2 className="text-3xl font-bold text-gray-800 mt-2">
+    {data?.interventions_terminees ?? 0}
+</h2>
                             </div>
 
                             <div className="w-12 h-12 rounded-lg bg-[#E6F8F7] flex items-center justify-center">
@@ -127,13 +130,14 @@ function Dashboard() {
                         <div className="flex items-center justify-between">
 
                             <div>
-                                <p className="text-sm text-gray-500">
-                                    Alertes
-                                </p>
+                               {/* Équipements opérationnels */}
+<p className="text-sm text-gray-500">
+    Équipements opérationnels
+</p>
 
-                                <h2 className="text-3xl font-bold text-gray-800 mt-2">
-                                    {data?.alerts ?? 0}
-                                </h2>
+<h2 className="text-3xl font-bold text-gray-800 mt-2">
+    {data?.equipements_operationnels ?? 0}
+</h2>
                             </div>
 
                             <div className="w-12 h-12 rounded-lg bg-[#E6F8F7] flex items-center justify-center">
