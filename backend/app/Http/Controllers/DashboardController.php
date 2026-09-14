@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Equipment;
 use App\Models\Maintenance;
 use App\Models\Intervention;
 use App\Models\Alert;
-use Carbon\Carbon;
+
 class DashboardController extends Controller
 {
     public function index()
@@ -35,14 +36,23 @@ class DashboardController extends Controller
                 'isRead',
                 false
             )->count(),
+
             'upcoming_maintenances' => Maintenance::where(
-    'plannedDate',
-    '>=',
-    Carbon::today()
-)
-->orderBy('plannedDate', 'asc')
-->limit(5)
-->get(),
+                'plannedDate',
+                '>=',
+                Carbon::today()
+            )
+            ->orderBy('plannedDate', 'asc')
+            ->limit(5)
+            ->get(),
+
+            'recent_interventions' => Intervention::with([
+                'maintenance.equipment',
+                'technician'
+            ])
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get(),
         ]);
     }
 }
