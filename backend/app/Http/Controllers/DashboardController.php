@@ -13,10 +13,28 @@ class DashboardController extends Controller
     {
         return response()->json([
             'equipment' => Equipment::count(),
-            'maintenances' => Maintenance::count(),
-            'interventions' => Intervention::count(),
+
+            'interventions_en_cours' => Intervention::where(
+                'status',
+                'en_cours'
+            )->count(),
+
+            'interventions_terminees' => Intervention::where(
+                'status',
+                'terminee'
+            )->count(),
+
+            'equipements_operationnels' => Equipment::where(
+                'status',
+                'operationnel'
+            )->count(),
+
             'alerts' => Alert::count(),
-            'unread_alerts' => Alert::where('isRead', false)->count(),
+
+            'unread_alerts' => Alert::where(
+                'isRead',
+                false
+            )->count(),
         ]);
     }
 }
