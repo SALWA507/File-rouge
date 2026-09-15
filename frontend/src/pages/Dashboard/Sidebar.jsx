@@ -63,7 +63,7 @@ function Sidebar() {
                 </a>
 
                 <a
-                    href="#"
+                    href="demandes"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#13B8B0] hover:text-white"
                 >
                     <Bell size={20} />
@@ -71,12 +71,12 @@ function Sidebar() {
                 </a>
 
                 <a
-                    href="#"
-                    className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#13B8B0] hover:text-white"
-                >
-                    <CalendarDays size={20} />
-                    <span>Calendrier</span>
-                </a>
+    href="/calendrier"
+    className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#13B8B0] hover:text-white"
+>
+    <CalendarDays size={20} />
+    <span>Calendrier</span>
+</a>
 
                 <a
                     href="#"
