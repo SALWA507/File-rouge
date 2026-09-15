@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Equipments from "./pages/Equipments/Equipments";
+import Maintenance from "./pages/Maintenance/Maintenance";
 function App() {
     return (
         <BrowserRouter>
@@ -15,6 +16,7 @@ function App() {
 
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/equipments" element={<Equipments />} /> 
+                <Route path="/maintenance" element={<Maintenance />} />
             </Routes>
         </BrowserRouter>
     );
