@@ -6,9 +6,9 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Equipments from "./pages/Equipments/Equipments";
 import Maintenance from "./pages/Maintenance/Maintenance";
 import Interventions from "./pages/Interventions/Interventions";
-import Alerts from "./pages/Demandes/Demandes";
 import Demandes from "./pages/Demandes/Demandes";
 import Calendar from "./pages/Calendar/Calendar";
+import Rapports from "./pages/Rapports/Rapports";
 function App() {
     return (
         <BrowserRouter>
@@ -25,6 +25,7 @@ function App() {
                 <Route path="/Intervention" element={<Interventions />} />
                 <Route path="/demandes" element={<Demandes />} />
                 <Route path="/calendrier" element={<Calendar />} />
+                <Route path="/rapports" element={<Rapports />} />
             </Routes>
         </BrowserRouter>
     );
