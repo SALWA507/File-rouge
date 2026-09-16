@@ -1,22 +1,17 @@
+
 import { useEffect, useState } from "react";
 import api from "../../api";
-import Sidebar from "../Dashboard/Sidebar";
-
 
 function Demandes() {
-
     // =========================
     // USER CONNECTÉ
     // =========================
-
     const user = JSON.parse(localStorage.getItem("user"));
-
     const role = user?.role;
 
     // =========================
     // STATES
     // =========================
-
     const [demands, setDemands] = useState([]);
     const [equipments, setEquipments] = useState([]);
     const [technicians, setTechnicians] = useState([]);
@@ -25,7 +20,6 @@ function Demandes() {
 
     const [addDemand, setAddDemand] = useState(false);
     const [editDemand, setEditDemand] = useState(false);
-
     const [selectedDemand, setSelectedDemand] = useState(null);
 
     const [newDemand, setNewDemand] = useState({
@@ -38,110 +32,80 @@ function Demandes() {
     // =========================
     // GET DEMANDS
     // =========================
-
     useEffect(() => {
-
         api.get("/demands")
             .then((response) => {
-
                 setDemands(response.data);
-
             })
             .catch((error) => {
-
                 console.error(
                     "Erreur demandes :",
                     error.response?.data
                 );
-
             })
             .finally(() => {
-
                 setLoading(false);
-
             });
-
     }, []);
 
     // =========================
     // GET EQUIPMENTS
     // =========================
-
     useEffect(() => {
-
         api.get("/equipment")
             .then((response) => {
-
                 setEquipments(response.data);
-
             })
             .catch((error) => {
-
                 console.error(
                     "Erreur équipements :",
                     error.response?.data
                 );
-
             });
-
     }, []);
 
     // =========================
     // GET TECHNICIENS
     // UNIQUEMENT ADMIN
     // =========================
-
     useEffect(() => {
-
         if (role !== "admin") {
             return;
         }
 
         api.get("/users")
             .then((response) => {
-
-                const techniciansOnly =
-                    response.data.filter(
-                        (user) =>
-                            user.role === "technicien"
-                    );
+                const techniciansOnly = response.data.filter(
+                    (user) => user.role === "technicien"
+                );
 
                 setTechnicians(techniciansOnly);
-
             })
             .catch((error) => {
-
                 console.error(
                     "Erreur techniciens :",
                     error.response?.data
                 );
-
             });
-
     }, [role]);
 
     // =========================
     // AJOUTER UNE DEMANDE
     // PERSONNEL UNIQUEMENT
     // =========================
-
     const addNewDemand = async () => {
-
         if (
             !newDemand.equipment_id ||
             !newDemand.title ||
             !newDemand.description
         ) {
-
             alert(
                 "Veuillez remplir les champs obligatoires."
             );
-
             return;
         }
 
         try {
-
             const response = await api.post(
                 "/demands",
                 newDemand
@@ -153,7 +117,7 @@ function Demandes() {
 
             setDemands([
                 ...demands,
-                demand
+                demand,
             ]);
 
             setAddDemand(false);
@@ -164,9 +128,7 @@ function Demandes() {
                 description: "",
                 priority: "normal",
             });
-
         } catch (error) {
-
             console.error(
                 "Erreur ajout demande :",
                 error.response?.data
@@ -174,7 +136,7 @@ function Demandes() {
 
             alert(
                 error.response?.data?.message ||
-                "Erreur lors de l'ajout."
+                    "Erreur lors de l'ajout."
             );
         }
     };
@@ -183,11 +145,8 @@ function Demandes() {
     // MODIFIER
     // ADMIN UNIQUEMENT
     // =========================
-
     const updateDemand = async () => {
-
         try {
-
             const data = {
                 equipment_id:
                     selectedDemand.equipment_id,
@@ -227,9 +186,7 @@ function Demandes() {
 
             setEditDemand(false);
             setSelectedDemand(null);
-
         } catch (error) {
-
             console.error(
                 "Erreur modification :",
                 error.response?.data
@@ -237,7 +194,7 @@ function Demandes() {
 
             alert(
                 error.response?.data?.message ||
-                "Erreur lors de la modification."
+                    "Erreur lors de la modification."
             );
         }
     };
@@ -246,20 +203,16 @@ function Demandes() {
     // SUPPRIMER
     // ADMIN UNIQUEMENT
     // =========================
-
     const deleteDemand = async (id) => {
-
-        const confirmation =
-            window.confirm(
-                "Êtes-vous sûre de vouloir supprimer cette demande ?"
-            );
+        const confirmation = window.confirm(
+            "Êtes-vous sûre de vouloir supprimer cette demande ?"
+        );
 
         if (!confirmation) {
             return;
         }
 
         try {
-
             await api.delete(
                 `/demands/${id}`
             );
@@ -270,9 +223,7 @@ function Demandes() {
                         demand.id !== id
                 )
             );
-
         } catch (error) {
-
             console.error(
                 "Erreur suppression :",
                 error.response?.data
@@ -280,39 +231,20 @@ function Demandes() {
 
             alert(
                 error.response?.data?.message ||
-                "Erreur lors de la suppression."
+                    "Erreur lors de la suppression."
             );
         }
     };
 
-  
-
-    if (loading) {
-
-        return (
-            <div className="min-h-screen bg-[#F8FAFC] p-8">
-
-                <p className="text-gray-500">
-                    Chargement des demandes...
-                </p>
-
-            </div>
-        );
-    }
-
-   
-
     return (
-       
-
         <div className="min-h-screen bg-[#F8FAFC] p-8">
-           
 
-
+            {/* =========================
+                HEADER
+            ========================= */}
             <div className="flex items-center justify-between mb-8">
 
                 <div>
-
                     <h1 className="text-3xl font-bold text-gray-800">
                         Demandes
                     </h1>
@@ -320,15 +252,12 @@ function Demandes() {
                     <p className="text-gray-500 mt-1">
                         Gestion des demandes de maintenance
                     </p>
-
                 </div>
 
                 {/* AJOUTER
                     PERSONNEL UNIQUEMENT
                 */}
-
                 {role === "personnel" && (
-
                     <button
                         onClick={() =>
                             setAddDemand(true)
@@ -337,17 +266,59 @@ function Demandes() {
                     >
                         + Ajouter une demande
                     </button>
-
                 )}
 
             </div>
 
             {/* =========================
-                LISTE
+                LOADING SKELETON
             ========================= */}
+            {loading ? (
 
-            {demands.length === 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
+                    {[1, 2, 3].map((item) => (
+                        <div
+                            key={item}
+                            className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 animate-pulse"
+                        >
+
+                            {/* Icon */}
+                            <div className="w-12 h-12 rounded-xl bg-gray-200 mb-5"></div>
+
+                            {/* Title */}
+                            <div className="h-5 bg-gray-200 rounded w-40"></div>
+
+                            {/* Priority */}
+                            <div className="h-6 bg-gray-200 rounded-full w-28 mt-4"></div>
+
+                            {/* Status */}
+                            <div className="h-6 bg-gray-200 rounded-full w-24 mt-3"></div>
+
+                            {/* Equipment */}
+                            <div className="h-4 bg-gray-200 rounded w-44 mt-5"></div>
+
+                            {/* Technician */}
+                            <div className="h-4 bg-gray-200 rounded w-40 mt-3"></div>
+
+                            {/* Description */}
+                            <div className="h-4 bg-gray-200 rounded w-full mt-4"></div>
+                            <div className="h-4 bg-gray-200 rounded w-3/4 mt-2"></div>
+
+                            {/* Buttons */}
+                            <div className="h-10 bg-gray-200 rounded-xl mt-5"></div>
+                            <div className="h-10 bg-gray-200 rounded-xl mt-2"></div>
+
+                        </div>
+                    ))}
+
+                </div>
+
+            ) : demands.length === 0 ? (
+
+                /* =========================
+                    AUCUNE DEMANDE
+                ========================= */
                 <div className="bg-white rounded-2xl p-8 text-center border">
 
                     <p className="text-gray-500">
@@ -358,6 +329,9 @@ function Demandes() {
 
             ) : (
 
+                /* =========================
+                    LISTE DES DEMANDES
+                ========================= */
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
                     {demands.map((demand) => (
@@ -368,7 +342,6 @@ function Demandes() {
                         >
 
                             {/* ICON */}
-
                             <div className="w-12 h-12 rounded-xl bg-[#E6F8F7] flex items-center justify-center mb-5">
 
                                 <span className="text-2xl">
@@ -378,41 +351,30 @@ function Demandes() {
                             </div>
 
                             {/* TITLE */}
-
                             <h2 className="text-lg font-semibold text-gray-800">
-
                                 {demand.title}
-
                             </h2>
 
                             {/* PRIORITY */}
-
                             <div className="mt-3">
 
                                 <span className="px-3 py-1 rounded-full text-sm bg-orange-50 text-orange-600">
-
                                     Priorité :{" "}
-
                                     {demand.priority}
-
                                 </span>
 
                             </div>
 
                             {/* STATUS */}
-
                             <div className="mt-3">
 
                                 <span className="px-3 py-1 rounded-full text-sm bg-[#E6F8F7] text-[#0F7C7C]">
-
                                     {demand.status}
-
                                 </span>
 
                             </div>
 
                             {/* EQUIPMENT */}
-
                             <p className="text-gray-500 text-sm mt-4">
 
                                 Équipement :{" "}
@@ -423,7 +385,6 @@ function Demandes() {
                             </p>
 
                             {/* TECHNICIEN */}
-
                             <p className="text-gray-500 text-sm mt-2">
 
                                 Technicien :{" "}
@@ -434,7 +395,6 @@ function Demandes() {
                             </p>
 
                             {/* DESCRIPTION */}
-
                             <p className="text-gray-500 text-sm mt-3">
 
                                 {demand.description}
@@ -442,15 +402,12 @@ function Demandes() {
                             </p>
 
                             {/* BUTTONS */}
-
                             <div className="mt-auto pt-5 space-y-2">
 
                                 {/* MODIFIER
                                     ADMIN UNIQUEMENT
                                 */}
-
                                 {role === "admin" && (
-
                                     <button
                                         onClick={() => {
 
@@ -467,15 +424,12 @@ function Demandes() {
                                     >
                                         Modifier
                                     </button>
-
                                 )}
 
                                 {/* SUPPRIMER
                                     ADMIN UNIQUEMENT
                                 */}
-
                                 {role === "admin" && (
-
                                     <button
                                         onClick={() =>
                                             deleteDemand(
@@ -486,7 +440,6 @@ function Demandes() {
                                     >
                                         Supprimer
                                     </button>
-
                                 )}
 
                             </div>
@@ -496,14 +449,12 @@ function Demandes() {
                     ))}
 
                 </div>
-
             )}
 
             {/* =========================
                 MODAL AJOUT
                 PERSONNEL
             ========================= */}
-
             {addDemand && role === "personnel" && (
 
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
@@ -521,7 +472,6 @@ function Demandes() {
                         <div className="p-6 space-y-4">
 
                             {/* EQUIPMENT */}
-
                             <select
                                 value={
                                     newDemand.equipment_id
@@ -551,9 +501,7 @@ function Demandes() {
                                                 equipment.id
                                             }
                                         >
-                                            {
-                                                equipment.name
-                                            }
+                                            {equipment.name}
                                         </option>
 
                                     )
@@ -562,7 +510,6 @@ function Demandes() {
                             </select>
 
                             {/* TITLE */}
-
                             <input
                                 type="text"
                                 value={
@@ -580,7 +527,6 @@ function Demandes() {
                             />
 
                             {/* PRIORITY */}
-
                             <select
                                 value={
                                     newDemand.priority
@@ -614,7 +560,6 @@ function Demandes() {
                             </select>
 
                             {/* DESCRIPTION */}
-
                             <textarea
                                 rows="4"
                                 value={
@@ -658,14 +603,12 @@ function Demandes() {
                     </div>
 
                 </div>
-
             )}
 
             {/* =========================
                 MODAL MODIFICATION
                 ADMIN
             ========================= */}
-
             {editDemand &&
                 selectedDemand &&
                 role === "admin" && (
@@ -685,7 +628,6 @@ function Demandes() {
                             <div className="p-6 space-y-4">
 
                                 {/* EQUIPMENT */}
-
                                 <select
                                     value={
                                         selectedDemand.equipment_id
@@ -711,9 +653,7 @@ function Demandes() {
                                                     equipment.id
                                                 }
                                             >
-                                                {
-                                                    equipment.name
-                                                }
+                                                {equipment.name}
                                             </option>
 
                                         )
@@ -722,7 +662,6 @@ function Demandes() {
                                 </select>
 
                                 {/* TECHNICIEN */}
-
                                 <select
                                     value={
                                         selectedDemand.technician_id ||
@@ -754,9 +693,7 @@ function Demandes() {
                                                     technician.id
                                                 }
                                             >
-                                                {
-                                                    technician.name
-                                                }
+                                                {technician.name}
                                             </option>
 
                                         )
@@ -765,7 +702,6 @@ function Demandes() {
                                 </select>
 
                                 {/* TITLE */}
-
                                 <input
                                     type="text"
                                     value={
@@ -782,7 +718,6 @@ function Demandes() {
                                 />
 
                                 {/* PRIORITY */}
-
                                 <select
                                     value={
                                         selectedDemand.priority
@@ -816,7 +751,6 @@ function Demandes() {
                                 </select>
 
                                 {/* STATUS */}
-
                                 <select
                                     value={
                                         selectedDemand.status
@@ -854,7 +788,6 @@ function Demandes() {
                                 </select>
 
                                 {/* DESCRIPTION */}
-
                                 <textarea
                                     rows="4"
                                     value={
@@ -877,7 +810,9 @@ function Demandes() {
                                 <button
                                     onClick={() => {
 
-                                        setEditDemand(false);
+                                        setEditDemand(
+                                            false
+                                        );
 
                                         setSelectedDemand(
                                             null
@@ -903,7 +838,6 @@ function Demandes() {
                         </div>
 
                     </div>
-
                 )}
 
         </div>

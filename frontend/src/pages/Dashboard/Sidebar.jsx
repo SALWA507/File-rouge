@@ -10,98 +10,102 @@ import {
     CalendarDays,
 } from "lucide-react";
 
+import { Link } from "react-router-dom";
+
 function Sidebar() {
     return (
-<aside className="w-64 min-h-screen bg-white text-gray-800 p-5 border-r border-gray-200">
-          
+        <aside className="w-64 min-h-screen bg-white text-gray-800 p-5 border-r border-gray-200">
+
+            {/* Logo */}
             <div className="flex items-center gap-3 mb-10">
                 <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-                   <Monitor
-    size={22}
-    className="text-[#13B8B0]"
-/>
+                    <Monitor
+                        size={22}
+                        className="text-[#13B8B0]"
+                    />
                 </div>
 
                 <h1 className="text-xl font-bold text-[#172033]">
-    BioMaintenix
-</h1>
+                    BioMaintenix
+                </h1>
             </div>
 
-           
+            {/* Navigation */}
             <nav className="space-y-2">
 
-                <a
-                    href="/dashboard"
+                {/* Dashboard */}
+                <Link
+                    to="/dashboard"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg bg-[#13B8B0] text-white"
                 >
                     <LayoutDashboard size={20} />
                     <span>Tableau de bord</span>
-                </a>
+                </Link>
 
-                <a
-                   href="/equipments"
+                {/* Équipements */}
+                <Link
+                    to="/equipments"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#13B8B0] hover:text-white"
                 >
                     <Monitor size={20} />
                     <span>Équipements</span>
-                </a>
+                </Link>
 
-                <a
-                     href="/maintenance"
+                {/* Maintenance */}
+                <Link
+                    to="/maintenance"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#13B8B0] hover:text-white"
                 >
                     <Wrench size={20} />
                     <span>Maintenance</span>
-                </a>
+                </Link>
 
-                <a
-                    href="/intervention"
+                {/* Interventions */}
+                <Link
+                    to="/interventions"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#13B8B0] hover:text-white"
                 >
                     <ClipboardList size={20} />
                     <span>Interventions</span>
-                </a>
+                </Link>
 
-                <a
-                    href="demandes"
+                {/* Demandes */}
+                <Link
+                    to="/demandes"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#13B8B0] hover:text-white"
                 >
                     <Bell size={20} />
                     <span>Demandes</span>
-                </a>
+                </Link>
 
-                <a
-    href="/calendrier"
-    className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#13B8B0] hover:text-white"
->
-    <CalendarDays size={20} />
-    <span>Calendrier</span>
-</a>
+                {/* Calendrier */}
+                <Link
+                    to="/calendrier"
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#13B8B0] hover:text-white"
+                >
+                    <CalendarDays size={20} />
+                    <span>Calendrier</span>
+                </Link>
 
-                <a
-                  href="/rapports"
+                {/* Rapports */}
+                <Link
+                    to="/rapports"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#13B8B0] hover:text-white"
                 >
                     <FileText size={20} />
                     <span>Rapports</span>
-                </a>
+                </Link>
 
-                <a
-                    href="#"
+                {/* Utilisateurs */}
+                <Link
+                    to="/users"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#13B8B0] hover:text-white"
                 >
                     <Users size={20} />
                     <span>Utilisateurs</span>
-                </a>
+                </Link>
 
-                <a
-                    href="#"
-                    className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#13B8B0] hover:text-white"
-                >
-                    <Settings size={20} />
-                    <span>Paramètres</span>
-                </a>
-
+                
             </nav>
 
         </aside>
