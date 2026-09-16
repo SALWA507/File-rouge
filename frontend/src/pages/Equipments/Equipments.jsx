@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
-
 import api from "../../api";
-
-import { Monitor } from "lucide-react";
+import { Monitor, Trash2 } from "lucide-react";
 
 function Equipments() {
     const [equipments, setEquipments] = useState([]);
+
+    // Récupérer le rôle de l'utilisateur connecté
+    const storedUser = localStorage.getItem("user");
+    const user = storedUser ? JSON.parse(storedUser) : null;
+    const role = user?.role;
+
+    const canManage = role === "admin" || role === "technicien";
 
     // Search
     const [search, setSearch] = useState("");
@@ -95,6 +100,29 @@ function Equipments() {
         }
     };
 
+    // Supprimer un équipement
+    const deleteEquipment = async (id) => {
+        const confirmed = window.confirm(
+            "Voulez-vous vraiment supprimer cet équipement ?"
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            await api.delete(`/equipment/${id}`);
+
+            setEquipments(
+                equipments.filter(
+                    (equipment) => equipment.id !== id
+                )
+            );
+        } catch (error) {
+            console.error("Erreur suppression :", error);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-[#F8FAFC] p-8">
 
@@ -119,12 +147,14 @@ function Equipments() {
                         className="w-full md:max-w-md p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#13B8B0]"
                     />
 
-                    <button
-                        onClick={() => setAddEquipment(true)}
-                        className="px-5 py-3 bg-[#13B8B0] text-white rounded-lg font-medium hover:bg-[#0fa49d]"
-                    >
-                        + Ajouter un équipement
-                    </button>
+                    {canManage && (
+                        <button
+                            onClick={() => setAddEquipment(true)}
+                            className="px-5 py-3 bg-[#13B8B0] text-white rounded-lg font-medium hover:bg-[#0fa49d]"
+                        >
+                            + Ajouter un équipement
+                        </button>
+                    )}
 
                 </div>
             </div>
@@ -133,6 +163,7 @@ function Equipments() {
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
                 {filteredEquipments.length > 0 ? (
+
                     filteredEquipments.map((equipment) => (
 
                         <div
@@ -228,14 +259,28 @@ function Equipments() {
                                     Voir détails
                                 </button>
 
-                                <button
-                                    onClick={() =>
-                                        setEditEquipment(equipment)
-                                    }
-                                    className="px-4 py-2 rounded-lg bg-[#13B8B0] text-white text-sm font-medium hover:bg-[#0fa49d] transition"
-                                >
-                                    Modifier
-                                </button>
+                                {canManage && (
+                                    <>
+                                        <button
+                                            onClick={() =>
+                                                setEditEquipment(equipment)
+                                            }
+                                            className="px-4 py-2 rounded-lg bg-[#13B8B0] text-white text-sm font-medium hover:bg-[#0fa49d] transition"
+                                        >
+                                            Modifier
+                                        </button>
+
+                                        <button
+                                            onClick={() =>
+                                                deleteEquipment(equipment.id)
+                                            }
+                                            className="px-3 py-2 rounded-lg text-red-500 hover:bg-red-50 transition"
+                                            title="Supprimer"
+                                        >
+                                            <Trash2 size={18} />
+                                        </button>
+                                    </>
+                                )}
 
                             </div>
 
@@ -255,6 +300,7 @@ function Equipments() {
 
             {/* Details Modal */}
             {selectedEquipment && (
+
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
 
                     <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-xl">
@@ -282,7 +328,6 @@ function Equipments() {
                                 <p className="text-sm text-gray-400">
                                     Nom
                                 </p>
-
                                 <p className="font-medium text-gray-800">
                                     {selectedEquipment.name}
                                 </p>
@@ -292,7 +337,6 @@ function Equipments() {
                                 <p className="text-sm text-gray-400">
                                     Référence
                                 </p>
-
                                 <p className="font-medium text-gray-800">
                                     {selectedEquipment.reference}
                                 </p>
@@ -302,7 +346,6 @@ function Equipments() {
                                 <p className="text-sm text-gray-400">
                                     Marque
                                 </p>
-
                                 <p className="font-medium text-gray-800">
                                     {selectedEquipment.brand}
                                 </p>
@@ -312,7 +355,6 @@ function Equipments() {
                                 <p className="text-sm text-gray-400">
                                     Modèle
                                 </p>
-
                                 <p className="font-medium text-gray-800">
                                     {selectedEquipment.model}
                                 </p>
@@ -322,7 +364,6 @@ function Equipments() {
                                 <p className="text-sm text-gray-400">
                                     Numéro de série
                                 </p>
-
                                 <p className="font-medium text-gray-800">
                                     {selectedEquipment.serialNumber}
                                 </p>
@@ -332,7 +373,6 @@ function Equipments() {
                                 <p className="text-sm text-gray-400">
                                     Localisation
                                 </p>
-
                                 <p className="font-medium text-gray-800">
                                     {selectedEquipment.location}
                                 </p>
@@ -342,7 +382,6 @@ function Equipments() {
                                 <p className="text-sm text-gray-400">
                                     Statut
                                 </p>
-
                                 <p className="font-medium text-gray-800">
                                     {selectedEquipment.status}
                                 </p>
@@ -362,10 +401,12 @@ function Equipments() {
                     </div>
 
                 </div>
+
             )}
 
             {/* Edit Modal */}
             {editEquipment && (
+
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
 
                     <div className="bg-white rounded-2xl p-6 w-full max-w-2xl shadow-xl max-h-[90vh] overflow-y-auto">
@@ -463,6 +504,24 @@ function Equipments() {
 
                             <div>
                                 <label className="block text-sm text-gray-600 mb-1">
+                                    Numéro de série
+                                </label>
+
+                                <input
+                                    type="text"
+                                    value={editEquipment.serialNumber}
+                                    onChange={(e) =>
+                                        setEditEquipment({
+                                            ...editEquipment,
+                                            serialNumber: e.target.value,
+                                        })
+                                    }
+                                    className="w-full p-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#13B8B0]"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm text-gray-600 mb-1">
                                     Localisation
                                 </label>
 
@@ -533,10 +592,12 @@ function Equipments() {
                     </div>
 
                 </div>
+
             )}
 
             {/* Add Equipment Modal */}
             {addEquipment && (
+
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
 
                     <div className="bg-white rounded-2xl p-6 w-full max-w-2xl shadow-xl max-h-[90vh] overflow-y-auto">
@@ -728,6 +789,7 @@ function Equipments() {
                     </div>
 
                 </div>
+
             )}
 
         </div>
@@ -735,4 +797,3 @@ function Equipments() {
 }
 
 export default Equipments;
-

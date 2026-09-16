@@ -13,56 +13,94 @@ import Rapports from "./pages/Rapports/Rapports";
 import Users from "./pages/Users/Users";
 
 import Layout from "./layouts/Layout";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
     return (
         <BrowserRouter>
             <Routes>
-
                 <Route path="/" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-
-             
                 <Route element={<Layout />}>
-
                     <Route
                         path="/dashboard"
-                        element={<Dashboard />}
+                        element={
+                            <ProtectedRoute
+                                roles={["admin", "technicien", "personnel"]}
+                            >
+                                <Dashboard />
+                            </ProtectedRoute>
+                        }
                     />
-
                     <Route
                         path="/equipments"
-                        element={<Equipments />}
+                        element={
+                            <ProtectedRoute
+                                roles={["admin", "technicien", "personnel"]}
+                            >
+                                <Equipments />
+                            </ProtectedRoute>
+                        }
                     />
-
                     <Route
                         path="/maintenance"
-                        element={<Maintenance />}
+                        element={
+                            <ProtectedRoute
+                                roles={["admin", "technicien"]}
+                            >
+                                <Maintenance />
+                            </ProtectedRoute>
+                        }
                     />
-
                     <Route
                         path="/interventions"
-                        element={<Interventions />}
+                        element={
+                            <ProtectedRoute
+                                roles={["admin", "technicien"]}
+                            >
+                                <Interventions />
+                            </ProtectedRoute>
+                        }
                     />
-
                     <Route
                         path="/demandes"
-                        element={<Demandes />}
+                        element={
+                            <ProtectedRoute
+                                roles={["admin", "technicien", "personnel"]}
+                            >
+                                <Demandes />
+                            </ProtectedRoute>
+                        }
                     />
-
                     <Route
                         path="/calendrier"
-                        element={<Calendar />}
+                        element={
+                            <ProtectedRoute
+                                roles={["admin", "personnel"]}
+                            >
+                                <Calendar />
+                            </ProtectedRoute>
+                        }
                     />
-
                     <Route
                         path="/rapports"
-                        element={<Rapports />}
+                        element={
+                            <ProtectedRoute
+                                roles={["admin"]}
+                            >
+                                <Rapports />
+                            </ProtectedRoute>
+                        }
                     />
-
                     <Route
                         path="/users"
-                        element={<Users />}
+                        element={
+                            <ProtectedRoute
+                                roles={["admin"]}
+                            >
+                                <Users />
+                            </ProtectedRoute>
+                        }
                     />
 
                 </Route>
