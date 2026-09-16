@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
+import Sidebar from "../Dashboard/Sidebar";
+
 
 function Demandes() {
 
@@ -283,9 +285,7 @@ function Demandes() {
         }
     };
 
-    // =========================
-    // LOADING
-    // =========================
+  
 
     if (loading) {
 
@@ -300,17 +300,14 @@ function Demandes() {
         );
     }
 
-    // =========================
-    // PAGE
-    // =========================
+   
 
     return (
+       
 
         <div className="min-h-screen bg-[#F8FAFC] p-8">
+           
 
-            {/* =========================
-                HEADER
-            ========================= */}
 
             <div className="flex items-center justify-between mb-8">
 

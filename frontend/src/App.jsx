@@ -9,6 +9,7 @@ import Interventions from "./pages/Interventions/Interventions";
 import Demandes from "./pages/Demandes/Demandes";
 import Calendar from "./pages/Calendar/Calendar";
 import Rapports from "./pages/Rapports/Rapports";
+import Layout from "./layouts/Layout";
 function App() {
     return (
         <BrowserRouter>

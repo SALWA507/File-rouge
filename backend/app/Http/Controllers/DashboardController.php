@@ -14,7 +14,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'equipment' => Equipment::count(),
-
+            'interventions' => Intervention::count(),
             'interventions_en_cours' => Intervention::where(
                 'status',
                 'en_cours'
@@ -29,6 +29,10 @@ class DashboardController extends Controller
                 'status',
                 'operationnel'
             )->count(),
+            'equipements_hors_service' => Equipment::where(
+    'status',
+    'hors_service'
+)->count(),
 
             'alerts' => Alert::count(),
 
