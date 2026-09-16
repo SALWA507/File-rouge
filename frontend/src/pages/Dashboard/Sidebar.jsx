@@ -6,7 +6,6 @@ import {
     Bell,
     FileText,
     Users,
-    Settings,
     CalendarDays,
 } from "lucide-react";
 
@@ -14,9 +13,7 @@ import { Link } from "react-router-dom";
 
 function Sidebar() {
     return (
-        <aside className="w-64 min-h-screen bg-white text-gray-800 p-5 border-r border-gray-200">
-
-            {/* Logo */}
+        <aside className="fixed left-0 top-0 z-40 w-64 h-screen bg-white text-gray-800 p-5 border-r border-gray-200 overflow-y-auto">
             <div className="flex items-center gap-3 mb-10">
                 <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
                     <Monitor
@@ -29,11 +26,7 @@ function Sidebar() {
                     BioMaintenix
                 </h1>
             </div>
-
-            {/* Navigation */}
             <nav className="space-y-2">
-
-                {/* Dashboard */}
                 <Link
                     to="/dashboard"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg bg-[#13B8B0] text-white"
@@ -41,8 +34,6 @@ function Sidebar() {
                     <LayoutDashboard size={20} />
                     <span>Tableau de bord</span>
                 </Link>
-
-                {/* Équipements */}
                 <Link
                     to="/equipments"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#13B8B0] hover:text-white"
@@ -50,8 +41,6 @@ function Sidebar() {
                     <Monitor size={20} />
                     <span>Équipements</span>
                 </Link>
-
-                {/* Maintenance */}
                 <Link
                     to="/maintenance"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#13B8B0] hover:text-white"
@@ -59,8 +48,6 @@ function Sidebar() {
                     <Wrench size={20} />
                     <span>Maintenance</span>
                 </Link>
-
-                {/* Interventions */}
                 <Link
                     to="/interventions"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#13B8B0] hover:text-white"
@@ -68,8 +55,6 @@ function Sidebar() {
                     <ClipboardList size={20} />
                     <span>Interventions</span>
                 </Link>
-
-                {/* Demandes */}
                 <Link
                     to="/demandes"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#13B8B0] hover:text-white"
@@ -77,8 +62,6 @@ function Sidebar() {
                     <Bell size={20} />
                     <span>Demandes</span>
                 </Link>
-
-                {/* Calendrier */}
                 <Link
                     to="/calendrier"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#13B8B0] hover:text-white"
@@ -86,8 +69,6 @@ function Sidebar() {
                     <CalendarDays size={20} />
                     <span>Calendrier</span>
                 </Link>
-
-                {/* Rapports */}
                 <Link
                     to="/rapports"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#13B8B0] hover:text-white"
@@ -95,8 +76,6 @@ function Sidebar() {
                     <FileText size={20} />
                     <span>Rapports</span>
                 </Link>
-
-                {/* Utilisateurs */}
                 <Link
                     to="/users"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[#13B8B0] hover:text-white"
@@ -104,10 +83,7 @@ function Sidebar() {
                     <Users size={20} />
                     <span>Utilisateurs</span>
                 </Link>
-
-                
             </nav>
-
         </aside>
     );
 }

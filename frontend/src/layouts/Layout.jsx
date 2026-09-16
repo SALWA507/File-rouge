@@ -3,10 +3,10 @@ import Sidebar from "../pages/Dashboard/Sidebar";
 
 function Layout() {
     return (
-        <div className="flex min-h-screen bg-[#F8FAFC]">
+        <div className="min-h-screen bg-[#F8FAFC]">
             <Sidebar />
 
-            <main className="flex-1">
+            <main className="ml-64 min-h-screen">
                 <Outlet />
             </main>
         </div>
