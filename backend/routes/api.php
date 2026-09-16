@@ -15,8 +15,17 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/user', [AuthController::class, 'user']);
 Route::get('/dashboard', [DashboardController::class, 'index']);
-Route::apiResource('equipment', EquipmentController::class)
-    ->middleware('role:admin,technicien');
+
+Route::get('/equipment', [EquipmentController::class, 'index']);
+Route::get('/equipment/{equipment}', [EquipmentController::class, 'show']);
+
+Route::middleware('role:admin,technicien')->group(function () {
+    Route::post('/equipment', [EquipmentController::class, 'store']);
+    Route::put('/equipment/{equipment}', [EquipmentController::class, 'update']);
+    Route::patch('/equipment/{equipment}', [EquipmentController::class, 'update']);
+    Route::delete('/equipment/{equipment}', [EquipmentController::class, 'destroy']);
+});
+
 Route::apiResource('maintenances', MaintenanceController::class)
     ->middleware('role:admin,technicien');
 Route::apiResource('interventions', InterventionController::class)
