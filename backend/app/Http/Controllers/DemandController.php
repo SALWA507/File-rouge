@@ -126,7 +126,50 @@ public function store(Request $request)
             'demand' => $demand,
         ]);
     }
+public function assignTechnician(Request $request, string $id)
+{
+    if ($request->user()->role !== 'admin') {
+        return response()->json([
+            'message' => 'Seul l’administrateur peut affecter un technicien'
+        ], 403);
+    }
 
+    $demand = Demand::find($id);
+
+    if (!$demand) {
+        return response()->json([
+            'message' => 'Demande introuvable'
+        ], 404);
+    }
+
+    $validated = $request->validate([
+        'technician_id' => [
+            'required',
+            'exists:users,id',
+            function ($attribute, $value, $fail) {
+                if (!User::where('id', $value)
+                    ->where('role', 'technicien')
+                    ->exists()) {
+                    $fail('L’utilisateur sélectionné n’est pas un technicien.');
+                }
+            },
+        ],
+    ]);
+
+    $demand->update([
+        'technician_id' => $validated['technician_id'],
+        'status' => 'assigned',
+    ]);
+
+    return response()->json([
+        'message' => 'Technicien affecté avec succès',
+        'demand' => $demand->load([
+            'user',
+            'equipment',
+            'technician'
+        ]),
+    ]);
+}
    public function destroy(Request $request, string $id)
 {
     $demand = Demand::find($id);

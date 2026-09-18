@@ -57,11 +57,11 @@ function Sidebar() {
             roles: ["admin", "technicien", "personnel"],
         },
         {
-            label: "Calendrier",
-            path: "/calendrier",
-            icon: CalendarDays,
-            roles: ["admin", "personnel"],
-        },
+    label: "Calendrier",
+    path: "/calendrier",
+    icon: CalendarDays,
+    roles: ["admin", "technicien"],
+},
         {
             label: "Rapports",
             path: "/rapports",

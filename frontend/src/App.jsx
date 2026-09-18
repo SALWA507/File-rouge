@@ -72,16 +72,16 @@ function App() {
                             </ProtectedRoute>
                         }
                     />
-                    <Route
-                        path="/calendrier"
-                        element={
-                            <ProtectedRoute
-                                roles={["admin", "personnel"]}
-                            >
-                                <Calendar />
-                            </ProtectedRoute>
-                        }
-                    />
+                   <Route
+    path="/calendrier"
+    element={
+        <ProtectedRoute
+            roles={["admin", "technicien"]}
+        >
+            <Calendar />
+        </ProtectedRoute>
+    }
+/>
                     <Route
                         path="/rapports"
                         element={

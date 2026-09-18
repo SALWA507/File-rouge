@@ -34,4 +34,7 @@ Route::apiResource('alerts', AlertController::class);
 Route::apiResource('users', UserController::class)
     ->middleware('role:admin');
     Route::apiResource('demands', DemandController::class);
+    Route::put('/demands/{demand}/assign-technician',
+    [DemandController::class, 'assignTechnician']
+);
 });
