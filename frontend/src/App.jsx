@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
-
+import Landing from "./pages/Landing/Landing";
 
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Equipments from "./pages/Equipments/Equipments";
@@ -20,69 +20,149 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Login />} />
-               
+
+                {/* =========================
+                    LANDING PAGE
+                ========================= */}
+
+                <Route
+                    path="/"
+                    element={<Landing />}
+                />
+
+                {/* =========================
+                    LOGIN
+                ========================= */}
+
+                <Route
+                    path="/login"
+                    element={<Login />}
+                />
+
+                {/* =========================
+                    PAGES AVEC SIDEBAR
+                ========================= */}
+
                 <Route element={<Layout />}>
+
+                    {/* DASHBOARD */}
+
                     <Route
                         path="/dashboard"
                         element={
                             <ProtectedRoute
-                                roles={["admin", "technicien", "personnel"]}
+                                roles={[
+                                    "admin",
+                                    "technicien",
+                                    "personnel",
+                                ]}
                             >
                                 <Dashboard />
                             </ProtectedRoute>
                         }
                     />
+
+                    {/* ÉQUIPEMENTS */}
+
                     <Route
                         path="/equipments"
                         element={
                             <ProtectedRoute
-                                roles={["admin", "technicien", "personnel"]}
+                                roles={[
+                                    "admin",
+                                    "technicien",
+                                    "personnel",
+                                ]}
                             >
                                 <Equipments />
                             </ProtectedRoute>
                         }
                     />
+
+                    {/* MAINTENANCE */}
+
                     <Route
                         path="/maintenance"
                         element={
                             <ProtectedRoute
-                                roles={["admin", "technicien"]}
+                                roles={[
+                                    "admin",
+                                    "technicien",
+                                ]}
                             >
                                 <Maintenance />
                             </ProtectedRoute>
                         }
                     />
+
+                    {/* INTERVENTIONS */}
+
                     <Route
                         path="/interventions"
                         element={
                             <ProtectedRoute
-                                roles={["admin", "technicien"]}
+                                roles={[
+                                    "admin",
+                                    "technicien",
+                                ]}
                             >
                                 <Interventions />
                             </ProtectedRoute>
                         }
                     />
+
+                    {/* DEMANDES */}
+
                     <Route
                         path="/demandes"
                         element={
                             <ProtectedRoute
-                                roles={["admin", "technicien", "personnel"]}
+                                roles={[
+                                    "admin",
+                                    "technicien",
+                                    "personnel",
+                                ]}
                             >
                                 <Demandes />
                             </ProtectedRoute>
                         }
                     />
-                   <Route
-    path="/calendrier"
-    element={
-        <ProtectedRoute
-            roles={["admin", "technicien"]}
-        >
-            <Calendar />
-        </ProtectedRoute>
-    }
-/>
+
+                    {/* ALERTES */}
+
+                    <Route
+                        path="/alerts"
+                        element={
+                            <ProtectedRoute
+                                roles={[
+                                    "admin",
+                                    "technicien",
+                                    "personnel",
+                                ]}
+                            >
+                                <Alerts />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    {/* CALENDRIER */}
+
+                    <Route
+                        path="/calendrier"
+                        element={
+                            <ProtectedRoute
+                                roles={[
+                                    "admin",
+                                    "technicien",
+                                ]}
+                            >
+                                <Calendar />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    {/* RAPPORTS */}
+
                     <Route
                         path="/rapports"
                         element={
@@ -93,6 +173,9 @@ function App() {
                             </ProtectedRoute>
                         }
                     />
+
+                    {/* UTILISATEURS */}
+
                     <Route
                         path="/users"
                         element={
@@ -105,16 +188,6 @@ function App() {
                     />
 
                 </Route>
-                <Route
-    path="/alerts"
-    element={
-        <ProtectedRoute
-            roles={["admin", "technicien", "personnel"]}
-        >
-            <Alerts />
-        </ProtectedRoute>
-    }
-/>
 
             </Routes>
         </BrowserRouter>

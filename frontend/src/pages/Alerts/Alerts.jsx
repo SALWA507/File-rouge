@@ -1,25 +1,20 @@
+
 import { useEffect, useState } from "react";
+
 import { Bell, Check, Trash2 } from "lucide-react";
+
 import api from "../../api";
 
 function Alerts() {
-    // =========================
-    // USER CONNECTÉ
-    // =========================
+   
     const storedUser = localStorage.getItem("user");
     const user = storedUser ? JSON.parse(storedUser) : null;
     const role = user?.role;
 
-    // =========================
-    // STATES
-    // =========================
     const [alerts, setAlerts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    // =========================
-    // GET ALERTS
-    // =========================
     const fetchAlerts = async () => {
         try {
             setLoading(true);
@@ -44,9 +39,7 @@ function Alerts() {
         fetchAlerts();
     }, []);
 
-    // =========================
-    // MARK AS READ
-    // =========================
+
     const markAsRead = async (alertItem) => {
         try {
             await api.put(`/alerts/${alertItem.id}`, {
@@ -60,6 +53,8 @@ function Alerts() {
                         : item
                 )
             );
+
+            window.dispatchEvent(new Event("alertsUpdated"));
         } catch (err) {
             console.error(err);
 
@@ -70,10 +65,7 @@ function Alerts() {
         }
     };
 
-    // =========================
-    // DELETE ALERT
-    // ADMIN SEULEMENT
-    // =========================
+
     const deleteAlert = async (alertItem) => {
         const confirmed = window.confirm(
             "Voulez-vous vraiment supprimer cette alerte ?"
@@ -91,6 +83,9 @@ function Alerts() {
                     (item) => item.id !== alertItem.id
                 )
             );
+
+            // Informer le Sidebar que le nombre d'alertes a changé
+            window.dispatchEvent(new Event("alertsUpdated"));
         } catch (err) {
             console.error(err);
 
@@ -104,6 +99,7 @@ function Alerts() {
     // =========================
     // LOADING
     // =========================
+
     if (loading) {
         return (
             <div className="p-6">
@@ -117,9 +113,11 @@ function Alerts() {
     // =========================
     // PAGE
     // =========================
+
     return (
         <div className="p-6">
             {/* HEADER */}
+
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h1 className="text-2xl font-bold text-[#172033]">
@@ -142,6 +140,7 @@ function Alerts() {
             </div>
 
             {/* ERROR */}
+
             {error && (
                 <div className="mb-4 p-4 rounded-lg bg-red-50 text-red-600">
                     {error}
@@ -149,6 +148,7 @@ function Alerts() {
             )}
 
             {/* EMPTY */}
+
             {alerts.length === 0 ? (
                 <div className="bg-white rounded-xl border border-gray-200 p-10 text-center">
                     <Bell
@@ -174,6 +174,7 @@ function Alerts() {
                             <div className="flex items-start justify-between gap-4">
 
                                 {/* ALERT INFO */}
+
                                 <div className="flex gap-4">
                                     <div className="w-10 h-10 rounded-full bg-[#13B8B0]/10 flex items-center justify-center flex-shrink-0">
                                         <Bell
@@ -217,9 +218,11 @@ function Alerts() {
                                 </div>
 
                                 {/* ACTIONS */}
+
                                 <div className="flex items-center gap-2 flex-shrink-0">
 
                                     {/* MARQUER COMME LU */}
+
                                     {!alertItem.isRead && (
                                         <button
                                             onClick={() =>
@@ -237,6 +240,7 @@ function Alerts() {
                                     )}
 
                                     {/* SUPPRIMER - ADMIN SEULEMENT */}
+
                                     {role === "admin" && (
                                         <button
                                             onClick={() =>
