@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Intervention;
+use App\Models\Alert;
 use Illuminate\Http\Request;
-
+use App\Models\Demand;
 class InterventionController extends Controller
 {
    public function index(Request $request)
@@ -50,6 +51,18 @@ class InterventionController extends Controller
 
     $intervention = Intervention::create($validated);
 
+    // Charger la maintenance et son équipement
+    $intervention->load('maintenance');
+
+    // Créer automatiquement une alerte pour le technicien
+    Alert::create([
+        'user_id' => $intervention->technician_id,
+        'equipment_id' => $intervention->maintenance->equipment_id,
+        'message' => 'Une nouvelle intervention vous a été assignée.',
+        'type' => 'intervention',
+        'isRead' => false,
+    ]);
+
     return response()->json([
         'message' => 'Intervention créée avec succès',
         'intervention' => $intervention->load([
@@ -58,7 +71,6 @@ class InterventionController extends Controller
         ]),
     ], 201);
 }
-
     public function show(Request $request, string $id)
 {
     $intervention = Intervention::with([
@@ -89,7 +101,7 @@ class InterventionController extends Controller
     return response()->json($intervention);
 }
 
-    public function update(Request $request, string $id)
+   public function update(Request $request, string $id)
 {
     $intervention = Intervention::find($id);
 
@@ -129,7 +141,38 @@ class InterventionController extends Controller
         unset($validated['technician_id']);
     }
 
+    // نحتافظو بالـ status القديم
+    $oldStatus = $intervention->status;
+
     $intervention->update($validated);
+
+    // إذا ولات intervention completed لأول مرة
+    if (
+        $oldStatus !== 'completed' &&
+        $intervention->status === 'completed'
+    ) {
+        // نجيب maintenance باش نعرفو equipment
+        $intervention->load('maintenance');
+
+        // نبحثو على آخر demande ديال نفس equipment
+        $demand = Demand::where(
+            'equipment_id',
+            $intervention->maintenance->equipment_id
+        )
+        ->latest()
+        ->first();
+
+        // إذا لقينا demande
+        if ($demand) {
+            Alert::create([
+                'user_id' => $demand->user_id,
+                'equipment_id' => $demand->equipment_id,
+                'message' => 'Votre intervention est terminée.',
+                'type' => 'intervention',
+                'isRead' => false,
+            ]);
+        }
+    }
 
     return response()->json([
         'message' => 'Intervention modifiée avec succès',
@@ -139,7 +182,6 @@ class InterventionController extends Controller
         ]),
     ]);
 }
-
     public function destroy(Request $request, string $id)
 {
     $intervention = Intervention::find($id);

@@ -9,12 +9,19 @@ use App\Http\Controllers\InterventionController;
 use App\Http\Controllers\AlertController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DemandController;
+use App\Http\Controllers\RapportController;
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::middleware('auth:sanctum')->group(function () {
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/user', [AuthController::class, 'user']);
 Route::get('/dashboard', [DashboardController::class, 'index']);
+Route::get('/rapports', [RapportController::class, 'index']);
+
+Route::get(
+    '/rapports/equipment/{id}/history',
+    [RapportController::class, 'equipmentHistory']
+);
 
 Route::get('/equipment', [EquipmentController::class, 'index']);
 Route::get('/equipment/{equipment}', [EquipmentController::class, 'show']);

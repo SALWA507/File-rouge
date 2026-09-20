@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Demand;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Alert;
 class DemandController extends Controller
 {
     public function index(Request $request)
@@ -28,7 +29,6 @@ class DemandController extends Controller
 
 public function store(Request $request)
 {
-
     if ($request->user()->role !== 'personnel') {
         return response()->json([
             'message' => 'Seul le personnel peut créer une demande'
@@ -51,6 +51,19 @@ public function store(Request $request)
         'status' => 'pending',
     ]);
 
+    // 🔔 Alerter tous les administrateurs
+    $admins = User::where('role', 'admin')->get();
+
+    foreach ($admins as $admin) {
+        Alert::create([
+            'user_id' => $admin->id,
+            'equipment_id' => $demand->equipment_id,
+            'message' => 'Une nouvelle demande a été créée par ' . $request->user()->name . '.',
+            'type' => 'demande',
+            'isRead' => false,
+        ]);
+    }
+
     return response()->json([
         'message' => 'Demande créée avec succès',
         'demand' => $demand->load([
@@ -60,31 +73,6 @@ public function store(Request $request)
         ]),
     ], 201);
 }
-    public function show(Request $request, string $id)
-{
-    $demand = Demand::with(['user', 'equipment', 'technician'])->find($id);
-
-    if (!$demand) {
-        return response()->json([
-            'message' => 'Demande introuvable'
-        ], 404);
-    }
-
-    $user = $request->user();
-
-    if (
-        $user->role !== 'admin' &&
-        !($user->role === 'technicien' && $demand->technician_id === $user->id) &&
-        !($user->role === 'personnel' && $demand->user_id === $user->id)
-    ) {
-        return response()->json([
-            'message' => 'Accès interdit'
-        ], 403);
-    }
-
-    return response()->json($demand);
-}
-
     public function update(Request $request, string $id)
     {
         $demand = Demand::find($id);
@@ -159,6 +147,24 @@ public function assignTechnician(Request $request, string $id)
     $demand->update([
         'technician_id' => $validated['technician_id'],
         'status' => 'assigned',
+    ]);
+
+    // 🔔 Alerte pour le personnel qui a créé la demande
+    Alert::create([
+        'user_id' => $demand->user_id,
+        'equipment_id' => $demand->equipment_id,
+        'message' => 'Votre demande a été acceptée et affectée à un technicien.',
+        'type' => 'demande',
+        'isRead' => false,
+    ]);
+
+    // 🔔 Alerte pour le technicien
+    Alert::create([
+        'user_id' => $demand->technician_id,
+        'equipment_id' => $demand->equipment_id,
+        'message' => 'Une nouvelle demande vous a été affectée.',
+        'type' => 'demande',
+        'isRead' => false,
     ]);
 
     return response()->json([

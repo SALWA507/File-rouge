@@ -6,7 +6,8 @@ function Interventions() {
     // USER CONNECTÉ
     // =========================
 
-    const user = JSON.parse(localStorage.getItem("user"));
+    const storedUser = localStorage.getItem("user");
+    const user = storedUser ? JSON.parse(storedUser) : null;
     const role = user?.role;
 
     // =========================
@@ -19,6 +20,7 @@ function Interventions() {
 
     const [addIntervention, setAddIntervention] = useState(false);
     const [editIntervention, setEditIntervention] = useState(false);
+
     const [selectedIntervention, setSelectedIntervention] =
         useState(null);
 
@@ -49,7 +51,8 @@ function Interventions() {
     }, []);
 
     // =========================
-    // GET MAINTENANCES + TECHNICIENS
+    // GET MAINTENANCES
+    // + TECHNICIENS POUR ADMIN
     // =========================
 
     useEffect(() => {
@@ -68,10 +71,9 @@ function Interventions() {
         if (role === "admin") {
             api.get("/users")
                 .then((response) => {
-                    const techniciansOnly =
-                        response.data.filter(
-                            (user) => user.role === "technicien"
-                        );
+                    const techniciansOnly = response.data.filter(
+                        (user) => user.role === "technicien"
+                    );
 
                     setTechnicians(techniciansOnly);
                 })
@@ -91,7 +93,9 @@ function Interventions() {
 
     const addNewIntervention = async () => {
         if (role !== "admin") {
-            alert("Seul l'administrateur peut ajouter une intervention.");
+            alert(
+                "Seul l'administrateur peut ajouter une intervention."
+            );
             return;
         }
 
@@ -156,7 +160,9 @@ function Interventions() {
             return;
         }
 
-        if (!selectedIntervention) return;
+        if (!selectedIntervention) {
+            return;
+        }
 
         try {
             const response = await api.put(
@@ -165,8 +171,6 @@ function Interventions() {
                     maintenance_id:
                         selectedIntervention.maintenance_id,
 
-                    // Admin peut modifier le technicien.
-                    // Pour technicien, le backend ignore ce champ.
                     technician_id:
                         selectedIntervention.technician_id,
 
@@ -229,7 +233,9 @@ function Interventions() {
             "Êtes-vous sûre de vouloir supprimer cette intervention ?"
         );
 
-        if (!confirmation) return;
+        if (!confirmation) {
+            return;
+        }
 
         try {
             await api.delete(`/interventions/${id}`);
@@ -283,6 +289,29 @@ function Interventions() {
     };
 
     // =========================
+    // TRADUIRE LE STATUS
+    // =========================
+
+    const getStatusLabel = (status) => {
+        switch (status) {
+            case "assigned":
+                return "Assignée";
+
+            case "in_progress":
+                return "En cours";
+
+            case "completed":
+                return "Terminée";
+
+            case "cancelled":
+                return "Annulée";
+
+            default:
+                return status;
+        }
+    };
+
+    // =========================
     // RENDER
     // =========================
 
@@ -305,6 +334,7 @@ function Interventions() {
                 </div>
 
                 {/* ADMIN SEULEMENT */}
+
                 {role === "admin" && (
                     <button
                         onClick={() =>
@@ -330,126 +360,128 @@ function Interventions() {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
-                    {interventions.map(
-                        (intervention) => (
-                            <div
-                                key={intervention.id}
-                                className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col"
-                            >
+                    {interventions.map((intervention) => (
+                        <div
+                            key={intervention.id}
+                            className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col"
+                        >
 
-                                {/* ICON */}
-                                <div className="w-12 h-12 rounded-xl bg-[#E6F8F7] flex items-center justify-center mb-5">
-                                    <span className="text-2xl">
-                                        🛠️
-                                    </span>
-                                </div>
+                            {/* ICON */}
 
-                                {/* TITLE */}
-                                <h2 className="text-lg font-semibold text-gray-800">
-                                    Intervention #
-                                    {intervention.id}
-                                </h2>
-
-                                {/* STATUS */}
-                                <div className="mt-3">
-                                    <span className="px-3 py-1 rounded-full text-sm bg-[#E6F8F7] text-[#0F7C7C]">
-                                        {intervention.status}
-                                    </span>
-                                </div>
-
-                                {/* TECHNICIEN */}
-                                <div className="mt-4">
-                                    <p className="text-xs text-gray-400">
-                                        Technicien
-                                    </p>
-
-                                    <p className="text-sm font-medium text-gray-700 mt-1">
-                                        {intervention
-                                            .technician
-                                            ?.name ||
-                                            "Non assigné"}
-                                    </p>
-                                </div>
-
-                                {/* MAINTENANCE */}
-                                <div className="mt-4">
-                                    <p className="text-xs text-gray-400">
-                                        Maintenance
-                                    </p>
-
-                                    <p className="text-sm font-medium text-gray-700 mt-1">
-                                        Maintenance #
-                                        {
-                                            intervention.maintenance_id
-                                        }
-                                    </p>
-                                </div>
-
-                                {/* DESCRIPTION */}
-                                <p className="text-gray-500 text-sm mt-4">
-                                    {intervention.description ||
-                                        "Aucune description"}
-                                </p>
-
-                                {/* START DATE */}
-                                <p className="text-gray-400 text-sm mt-3">
-                                    Début :{" "}
-                                    {intervention.startDate
-                                        ? new Date(
-                                              intervention.startDate
-                                          ).toLocaleString()
-                                        : "-"}
-                                </p>
-
-                                {/* END DATE */}
-                                <p className="text-gray-400 text-sm mt-2">
-                                    Fin :{" "}
-                                    {intervention.endDate
-                                        ? new Date(
-                                              intervention.endDate
-                                          ).toLocaleString()
-                                        : "-"}
-                                </p>
-
-                                {/* =========================
-                                    ACTIONS
-                                ========================= */}
-
-                                <div className="mt-5 space-y-2">
-
-                                    {/* ADMIN + TECHNICIEN */}
-                                    {(role === "admin" ||
-                                        role ===
-                                            "technicien") && (
-                                        <button
-                                            onClick={() =>
-                                                openEditModal(
-                                                    intervention
-                                                )
-                                            }
-                                            className="w-full px-4 py-2.5 rounded-xl bg-[#E6F8F7] text-[#0F7C7C] font-medium hover:bg-[#D5F3F1]"
-                                        >
-                                            Modifier
-                                        </button>
-                                    )}
-
-                                    {/* ADMIN SEULEMENT */}
-                                    {role === "admin" && (
-                                        <button
-                                            onClick={() =>
-                                                deleteIntervention(
-                                                    intervention.id
-                                                )
-                                            }
-                                            className="w-full px-4 py-2.5 rounded-xl bg-red-50 text-red-600 font-medium hover:bg-red-100"
-                                        >
-                                            Supprimer
-                                        </button>
-                                    )}
-                                </div>
+                            <div className="w-12 h-12 rounded-xl bg-[#E6F8F7] flex items-center justify-center mb-5">
+                                <span className="text-2xl">
+                                    🛠️
+                                </span>
                             </div>
-                        )
-                    )}
+
+                            {/* TITLE */}
+
+                            <h2 className="text-lg font-semibold text-gray-800">
+                                Intervention #{intervention.id}
+                            </h2>
+
+                            {/* STATUS */}
+
+                            <div className="mt-3">
+                                <span className="px-3 py-1 rounded-full text-sm bg-[#E6F8F7] text-[#0F7C7C]">
+                                    {getStatusLabel(
+                                        intervention.status
+                                    )}
+                                </span>
+                            </div>
+
+                            {/* TECHNICIEN */}
+
+                            <div className="mt-4">
+                                <p className="text-xs text-gray-400">
+                                    Technicien
+                                </p>
+
+                                <p className="text-sm font-medium text-gray-700 mt-1">
+                                    {intervention.technician?.name ||
+                                        "Non assigné"}
+                                </p>
+                            </div>
+
+                            {/* MAINTENANCE */}
+
+                            <div className="mt-4">
+                                <p className="text-xs text-gray-400">
+                                    Maintenance
+                                </p>
+
+                                <p className="text-sm font-medium text-gray-700 mt-1">
+                                    Maintenance #
+                                    {intervention.maintenance_id}
+                                </p>
+                            </div>
+
+                            {/* DESCRIPTION */}
+
+                            <p className="text-gray-500 text-sm mt-4">
+                                {intervention.description ||
+                                    "Aucune description"}
+                            </p>
+
+                            {/* START DATE */}
+
+                            <p className="text-gray-400 text-sm mt-3">
+                                Début :{" "}
+                                {intervention.startDate
+                                    ? new Date(
+                                          intervention.startDate
+                                      ).toLocaleString()
+                                    : "-"}
+                            </p>
+
+                            {/* END DATE */}
+
+                            <p className="text-gray-400 text-sm mt-2">
+                                Fin :{" "}
+                                {intervention.endDate
+                                    ? new Date(
+                                          intervention.endDate
+                                      ).toLocaleString()
+                                    : "-"}
+                            </p>
+
+                            {/* ACTIONS */}
+
+                            <div className="mt-5 space-y-2">
+
+                                {/* ADMIN + TECHNICIEN */}
+
+                                {(role === "admin" ||
+                                    role === "technicien") && (
+                                    <button
+                                        onClick={() =>
+                                            openEditModal(
+                                                intervention
+                                            )
+                                        }
+                                        className="w-full px-4 py-2.5 rounded-xl bg-[#E6F8F7] text-[#0F7C7C] font-medium hover:bg-[#D5F3F1]"
+                                    >
+                                        Modifier
+                                    </button>
+                                )}
+
+                                {/* ADMIN SEULEMENT */}
+
+                                {role === "admin" && (
+                                    <button
+                                        onClick={() =>
+                                            deleteIntervention(
+                                                intervention.id
+                                            )
+                                        }
+                                        className="w-full px-4 py-2.5 rounded-xl bg-red-50 text-red-600 font-medium hover:bg-red-100"
+                                    >
+                                        Supprimer
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    ))}
                 </div>
             )}
 
@@ -464,6 +496,7 @@ function Interventions() {
                         <div className="bg-white rounded-2xl w-full max-w-md">
 
                             {/* HEADER */}
+
                             <div className="px-6 py-5 border-b">
                                 <h2 className="text-xl font-semibold">
                                     Ajouter une intervention
@@ -471,28 +504,26 @@ function Interventions() {
                             </div>
 
                             {/* BODY */}
+
                             <div className="p-6 space-y-4">
 
                                 {/* MAINTENANCE */}
+
                                 <select
                                     value={
                                         newIntervention.maintenance_id
                                     }
                                     onChange={(e) =>
-                                        setNewIntervention(
-                                            {
-                                                ...newIntervention,
-                                                maintenance_id:
-                                                    e.target
-                                                        .value,
-                                            }
-                                        )
+                                        setNewIntervention({
+                                            ...newIntervention,
+                                            maintenance_id:
+                                                e.target.value,
+                                        })
                                     }
                                     className="w-full border rounded-lg px-3 py-2"
                                 >
                                     <option value="">
-                                        Sélectionner une
-                                        maintenance
+                                        Sélectionner une maintenance
                                     </option>
 
                                     {maintenances.map(
@@ -515,25 +546,22 @@ function Interventions() {
                                 </select>
 
                                 {/* TECHNICIEN */}
+
                                 <select
                                     value={
                                         newIntervention.technician_id
                                     }
                                     onChange={(e) =>
-                                        setNewIntervention(
-                                            {
-                                                ...newIntervention,
-                                                technician_id:
-                                                    e.target
-                                                        .value,
-                                            }
-                                        )
+                                        setNewIntervention({
+                                            ...newIntervention,
+                                            technician_id:
+                                                e.target.value,
+                                        })
                                     }
                                     className="w-full border rounded-lg px-3 py-2"
                                 >
                                     <option value="">
-                                        Sélectionner un
-                                        technicien
+                                        Sélectionner un technicien
                                     </option>
 
                                     {technicians.map(
@@ -546,100 +574,79 @@ function Interventions() {
                                                     technician.id
                                                 }
                                             >
-                                                {
-                                                    technician.name
-                                                }
+                                                {technician.name}
                                             </option>
                                         )
                                     )}
                                 </select>
 
                                 {/* START */}
+
                                 <input
                                     type="datetime-local"
                                     value={
                                         newIntervention.startDate
                                     }
                                     onChange={(e) =>
-                                        setNewIntervention(
-                                            {
-                                                ...newIntervention,
-                                                startDate:
-                                                    e.target
-                                                        .value,
-                                            }
-                                        )
+                                        setNewIntervention({
+                                            ...newIntervention,
+                                            startDate:
+                                                e.target.value,
+                                        })
                                     }
                                     className="w-full border rounded-lg px-3 py-2"
                                 />
 
                                 {/* END */}
+
                                 <input
                                     type="datetime-local"
                                     value={
                                         newIntervention.endDate
                                     }
                                     onChange={(e) =>
-                                        setNewIntervention(
-                                            {
-                                                ...newIntervention,
-                                                endDate:
-                                                    e.target
-                                                        .value,
-                                            }
-                                        )
+                                        setNewIntervention({
+                                            ...newIntervention,
+                                            endDate:
+                                                e.target.value,
+                                        })
                                     }
                                     className="w-full border rounded-lg px-3 py-2"
                                 />
 
                                 {/* STATUS */}
+
                                 <select
                                     value={
                                         newIntervention.status
                                     }
                                     onChange={(e) =>
-                                        setNewIntervention(
-                                            {
-                                                ...newIntervention,
-                                                status: e.target
-                                                    .value,
-                                            }
-                                        )
+                                        setNewIntervention({
+                                            ...newIntervention,
+                                            status:
+                                                e.target.value,
+                                        })
                                     }
                                     className="w-full border rounded-lg px-3 py-2"
                                 >
                                     <option value="assigned">
                                         Assignée
                                     </option>
-
-                                    <option value="in_progress">
-                                        En cours
-                                    </option>
-
-                                    <option value="completed">
-                                        Terminée
-                                    </option>
-
-                                    <option value="cancelled">
-                                        Annulée
-                                    </option>
                                 </select>
 
                                 {/* DESCRIPTION */}
+
                                 <textarea
                                     rows="3"
                                     value={
                                         newIntervention.description
                                     }
                                     onChange={(e) =>
-                                        setNewIntervention(
-                                            {
-                                                ...newIntervention,
-                                                description:
-                                                    e.target
-                                                        .value,
-                                            }
-                                        )
+                                        setNewIntervention({
+                                            ...newIntervention,
+                                            description:
+                                                e.target.value,
+                                        })
                                     }
                                     placeholder="Description"
                                     className="w-full border rounded-lg px-3 py-2"
@@ -647,13 +654,12 @@ function Interventions() {
                             </div>
 
                             {/* FOOTER */}
+
                             <div className="flex justify-end gap-3 px-6 py-4 border-t">
 
                                 <button
                                     onClick={() =>
-                                        setAddIntervention(
-                                            false
-                                        )
+                                        setAddIntervention(false)
                                     }
                                     className="px-4 py-2 border rounded-lg"
                                 >
@@ -684,37 +690,36 @@ function Interventions() {
                         <div className="bg-white rounded-2xl w-full max-w-md">
 
                             {/* HEADER */}
+
                             <div className="px-6 py-5 border-b">
                                 <h2 className="text-xl font-semibold">
-                                    Modifier
-                                    l'intervention
+                                    Modifier l'intervention #
+                                    {selectedIntervention.id}
                                 </h2>
                             </div>
 
                             {/* BODY */}
+
                             <div className="p-6 space-y-4">
 
                                 {/* MAINTENANCE */}
+
                                 <select
                                     value={
                                         selectedIntervention.maintenance_id ||
                                         ""
                                     }
                                     onChange={(e) =>
-                                        setSelectedIntervention(
-                                            {
-                                                ...selectedIntervention,
-                                                maintenance_id:
-                                                    e.target
-                                                        .value,
-                                            }
-                                        )
+                                        setSelectedIntervention({
+                                            ...selectedIntervention,
+                                            maintenance_id:
+                                                e.target.value,
+                                        })
                                     }
                                     className="w-full border rounded-lg px-3 py-2"
                                 >
                                     <option value="">
-                                        Sélectionner une
-                                        maintenance
+                                        Sélectionner une maintenance
                                     </option>
 
                                     {maintenances.map(
@@ -737,56 +742,59 @@ function Interventions() {
                                 </select>
 
                                 {/* TECHNICIEN */}
-                                <select
-                                    value={
-                                        selectedIntervention.technician_id ||
-                                        ""
-                                    }
-                                    disabled={
-                                        role ===
-                                        "technicien"
-                                    }
-                                    onChange={(e) =>
-                                        setSelectedIntervention(
-                                            {
+
+                                {role === "admin" ? (
+                                    <select
+                                        value={
+                                            selectedIntervention.technician_id ||
+                                            ""
+                                        }
+                                        onChange={(e) =>
+                                            setSelectedIntervention({
                                                 ...selectedIntervention,
                                                 technician_id:
-                                                    e.target
-                                                        .value,
-                                            }
-                                        )
-                                    }
-                                    className={`w-full border rounded-lg px-3 py-2 ${
-                                        role ===
-                                        "technicien"
-                                            ? "bg-gray-100 cursor-not-allowed"
-                                            : ""
-                                    }`}
-                                >
-                                    <option value="">
-                                        Sélectionner un
-                                        technicien
-                                    </option>
+                                                    e.target.value,
+                                            })
+                                        }
+                                        className="w-full border rounded-lg px-3 py-2"
+                                    >
+                                        <option value="">
+                                            Sélectionner un technicien
+                                        </option>
 
-                                    {technicians.map(
-                                        (technician) => (
-                                            <option
-                                                key={
-                                                    technician.id
-                                                }
-                                                value={
-                                                    technician.id
-                                                }
-                                            >
-                                                {
-                                                    technician.name
-                                                }
-                                            </option>
-                                        )
-                                    )}
-                                </select>
+                                        {technicians.map(
+                                            (technician) => (
+                                                <option
+                                                    key={
+                                                        technician.id
+                                                    }
+                                                    value={
+                                                        technician.id
+                                                    }
+                                                >
+                                                    {
+                                                        technician.name
+                                                    }
+                                                </option>
+                                            )
+                                        )}
+                                    </select>
+                                ) : (
+                                    <input
+                                        type="text"
+                                        value={
+                                            selectedIntervention
+                                                .technician
+                                                ?.name ||
+                                            "Technicien assigné"
+                                        }
+                                        disabled
+                                        className="w-full border rounded-lg px-3 py-2 bg-gray-100 cursor-not-allowed"
+                                    />
+                                )}
 
                                 {/* START */}
+
                                 <input
                                     type="datetime-local"
                                     value={
@@ -794,19 +802,17 @@ function Interventions() {
                                         ""
                                     }
                                     onChange={(e) =>
-                                        setSelectedIntervention(
-                                            {
-                                                ...selectedIntervention,
-                                                startDate:
-                                                    e.target
-                                                        .value,
-                                            }
-                                        )
+                                        setSelectedIntervention({
+                                            ...selectedIntervention,
+                                            startDate:
+                                                e.target.value,
+                                        })
                                     }
                                     className="w-full border rounded-lg px-3 py-2"
                                 />
 
                                 {/* END */}
+
                                 <input
                                     type="datetime-local"
                                     value={
@@ -814,53 +820,96 @@ function Interventions() {
                                         ""
                                     }
                                     onChange={(e) =>
-                                        setSelectedIntervention(
-                                            {
-                                                ...selectedIntervention,
-                                                endDate:
-                                                    e.target
-                                                        .value,
-                                            }
-                                        )
+                                        setSelectedIntervention({
+                                            ...selectedIntervention,
+                                            endDate:
+                                                e.target.value,
+                                        })
                                     }
                                     className="w-full border rounded-lg px-3 py-2"
                                 />
 
                                 {/* STATUS */}
+
                                 <select
                                     value={
                                         selectedIntervention.status ||
                                         ""
                                     }
                                     onChange={(e) =>
-                                        setSelectedIntervention(
-                                            {
-                                                ...selectedIntervention,
-                                                status: e.target
-                                                    .value,
-                                            }
-                                        )
+                                        setSelectedIntervention({
+                                            ...selectedIntervention,
+                                            status:
+                                                e.target.value,
+                                        })
                                     }
                                     className="w-full border rounded-lg px-3 py-2"
                                 >
-                                    <option value="assigned">
-                                        Assignée
-                                    </option>
+                                    {role === "admin" ? (
+                                        <>
+                                            <option value="assigned">
+                                                Assignée
+                                            </option>
 
-                                    <option value="in_progress">
-                                        En cours
-                                    </option>
+                                            <option value="in_progress">
+                                                En cours
+                                            </option>
 
-                                    <option value="completed">
-                                        Terminée
-                                    </option>
+                                            <option value="completed">
+                                                Terminée
+                                            </option>
 
-                                    <option value="cancelled">
-                                        Annulée
-                                    </option>
+                                            <option value="cancelled">
+                                                Annulée
+                                            </option>
+                                        </>
+                                    ) : (
+                                        <>
+                                            {selectedIntervention.status ===
+                                                "assigned" && (
+                                                <>
+                                                    <option value="assigned">
+                                                        Assignée
+                                                    </option>
+
+                                                    <option value="in_progress">
+                                                        En cours
+                                                    </option>
+                                                </>
+                                            )}
+
+                                            {selectedIntervention.status ===
+                                                "in_progress" && (
+                                                <>
+                                                    <option value="in_progress">
+                                                        En cours
+                                                    </option>
+
+                                                    <option value="completed">
+                                                        Terminée
+                                                    </option>
+                                                </>
+                                            )}
+
+                                            {selectedIntervention.status ===
+                                                "completed" && (
+                                                <option value="completed">
+                                                    Terminée
+                                                </option>
+                                            )}
+
+                                            {selectedIntervention.status ===
+                                                "cancelled" && (
+                                                <option value="cancelled">
+                                                    Annulée
+                                                </option>
+                                            )}
+                                        </>
+                                    )}
                                 </select>
 
                                 {/* DESCRIPTION */}
+
                                 <textarea
                                     rows="3"
                                     value={
@@ -868,14 +917,11 @@ function Interventions() {
                                         ""
                                     }
                                     onChange={(e) =>
-                                        setSelectedIntervention(
-                                            {
-                                                ...selectedIntervention,
-                                                description:
-                                                    e.target
-                                                        .value,
-                                            }
-                                        )
+                                        setSelectedIntervention({
+                                            ...selectedIntervention,
+                                            description:
+                                                e.target.value,
+                                        })
                                     }
                                     placeholder="Description"
                                     className="w-full border rounded-lg px-3 py-2"
@@ -883,6 +929,7 @@ function Interventions() {
                             </div>
 
                             {/* FOOTER */}
+
                             <div className="flex justify-end gap-3 px-6 py-4 border-t">
 
                                 <button

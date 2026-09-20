@@ -11,11 +11,15 @@ import {
 } from "lucide-react";
 
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import api from "../../api";
 
 function Sidebar() {
     const navigate = useNavigate();
 
-    // Récupérer l'utilisateur connecté
+    // =========================
+    // USER CONNECTÉ
+    // =========================
     const storedUser = localStorage.getItem("user");
 
     const user = storedUser
@@ -24,7 +28,35 @@ function Sidebar() {
 
     const role = user?.role;
 
-    // Menu disponible selon le rôle
+    // =========================
+    // NOMBRE D'ALERTES NON LUES
+    // =========================
+    const [unreadAlerts, setUnreadAlerts] = useState(0);
+
+    const fetchUnreadAlerts = async () => {
+        try {
+            const response = await api.get("/alerts");
+
+            const unread = response.data.filter(
+                (alert) => alert.isRead === false
+            ).length;
+
+            setUnreadAlerts(unread);
+        } catch (error) {
+            console.error(
+                "Erreur lors du chargement des alertes :",
+                error
+            );
+        }
+    };
+
+    useEffect(() => {
+        fetchUnreadAlerts();
+    }, []);
+
+    // =========================
+    // MENU
+    // =========================
     const menuItems = [
         {
             label: "Tableau de bord",
@@ -57,11 +89,17 @@ function Sidebar() {
             roles: ["admin", "technicien", "personnel"],
         },
         {
-    label: "Calendrier",
-    path: "/calendrier",
-    icon: CalendarDays,
-    roles: ["admin", "technicien"],
-},
+            label: "Alertes",
+            path: "/alerts",
+            icon: Bell,
+            roles: ["admin", "technicien", "personnel"],
+        },
+        {
+            label: "Calendrier",
+            path: "/calendrier",
+            icon: CalendarDays,
+            roles: ["admin", "technicien"],
+        },
         {
             label: "Rapports",
             path: "/rapports",
@@ -76,16 +114,19 @@ function Sidebar() {
         },
     ];
 
-    // Filtrer les menus selon le rôle
+    // =========================
+    // FILTRER SELON LE RÔLE
+    // =========================
     const visibleMenuItems = menuItems.filter((item) =>
         item.roles.includes(role)
     );
 
-    // Déconnexion
+    // =========================
+    // DÉCONNEXION
+    // =========================
     const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
-
         navigate("/");
     };
 
@@ -108,6 +149,7 @@ function Sidebar() {
 
             {/* Navigation */}
             <nav className="space-y-2 flex-1 overflow-y-auto">
+
                 {visibleMenuItems.map((item) => {
                     const Icon = item.icon;
 
@@ -124,9 +166,18 @@ function Sidebar() {
                             <Icon size={20} />
 
                             <span>{item.label}</span>
+
+                            {/* Badge Alertes */}
+                            {item.path === "/alerts" &&
+                                unreadAlerts > 0 && (
+                                    <span className="ml-auto min-w-[22px] h-[22px] px-1.5 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center">
+                                        {unreadAlerts}
+                                    </span>
+                                )}
                         </Link>
                     );
                 })}
+
             </nav>
 
             {/* Déconnexion */}
@@ -136,7 +187,6 @@ function Sidebar() {
                     className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-600 transition"
                 >
                     <LogOut size={20} />
-
                     <span>Déconnexion</span>
                 </button>
             </div>

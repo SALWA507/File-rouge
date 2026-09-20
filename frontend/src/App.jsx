@@ -11,6 +11,7 @@ import Demandes from "./pages/Demandes/Demandes";
 import Calendar from "./pages/Calendar/Calendar";
 import Rapports from "./pages/Rapports/Rapports";
 import Users from "./pages/Users/Users";
+import Alerts from "./pages/Alerts/Alerts";
 
 import Layout from "./layouts/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -104,6 +105,16 @@ function App() {
                     />
 
                 </Route>
+                <Route
+    path="/alerts"
+    element={
+        <ProtectedRoute
+            roles={["admin", "technicien", "personnel"]}
+        >
+            <Alerts />
+        </ProtectedRoute>
+    }
+/>
 
             </Routes>
         </BrowserRouter>
