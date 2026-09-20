@@ -16,18 +16,12 @@ class DashboardController extends Controller
     {
         $user = $request->user();
 
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN
-        |--------------------------------------------------------------------------
-        */
         if ($user->role === 'admin') {
 
             return response()->json([
 
                 'role' => 'admin',
 
-                // Équipements
                 'equipment' => Equipment::count(),
 
                 'equipements_operationnels' => Equipment::where(
@@ -40,7 +34,6 @@ class DashboardController extends Controller
                     'hors_service'
                 )->count(),
 
-                // Interventions
                 'interventions' => Intervention::count(),
 
                 'interventions_en_cours' => Intervention::where(
@@ -53,7 +46,6 @@ class DashboardController extends Controller
                     'completed'
                 )->count(),
 
-                // Alertes
                 'alerts' => Alert::count(),
 
                 'unread_alerts' => Alert::where(
@@ -61,7 +53,6 @@ class DashboardController extends Controller
                     false
                 )->count(),
 
-                // Maintenances
                 'upcoming_maintenances' => Maintenance::with([
                     'equipment'
                 ])
@@ -77,7 +68,6 @@ class DashboardController extends Controller
                     ->limit(5)
                     ->get(),
 
-                // Interventions récentes
                 'recent_interventions' => Intervention::with([
                     'maintenance.equipment',
                     'technician'
@@ -91,21 +81,13 @@ class DashboardController extends Controller
             ]);
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | TECHNICIEN
-        |--------------------------------------------------------------------------
-        */
         if ($user->role === 'technicien') {
 
-            // Interventions du technicien connecté
             $myInterventions = Intervention::where(
                 'technician_id',
                 $user->id
             );
 
-            // Maintenances liées à ses interventions
             $myMaintenances = Maintenance::whereHas(
                 'interventions',
                 function ($query) use ($user) {
@@ -116,13 +98,11 @@ class DashboardController extends Controller
                 }
             );
 
-            // Alertes du technicien
             $myAlerts = Alert::where(
                 'user_id',
                 $user->id
             );
 
-            // Demandes affectées au technicien
             $myDemands = Demand::where(
                 'technician_id',
                 $user->id
@@ -132,7 +112,6 @@ class DashboardController extends Controller
 
                 'role' => 'technicien',
 
-                // Interventions
                 'interventions' => (clone $myInterventions)->count(),
 
                 'interventions_en_cours' => (clone $myInterventions)
@@ -143,7 +122,6 @@ class DashboardController extends Controller
                     ->where('status', 'completed')
                     ->count(),
 
-                // Maintenances
                 'maintenances' => (clone $myMaintenances)->count(),
 
                 'maintenances_a_venir' => (clone $myMaintenances)
@@ -154,7 +132,6 @@ class DashboardController extends Controller
                     )
                     ->count(),
 
-                // Alertes
                 'alerts' => (clone $myAlerts)->count(),
 
                 'unread_alerts' => (clone $myAlerts)
@@ -164,7 +141,6 @@ class DashboardController extends Controller
                     )
                     ->count(),
 
-                // Demandes
                 'demandes' => (clone $myDemands)->count(),
 
                 'demandes_en_attente' => (clone $myDemands)
@@ -174,7 +150,6 @@ class DashboardController extends Controller
                     )
                     ->count(),
 
-                // Prochaines maintenances
                 'upcoming_maintenances' => (clone $myMaintenances)
                     ->with('equipment')
                     ->where(
@@ -189,7 +164,6 @@ class DashboardController extends Controller
                     ->limit(5)
                     ->get(),
 
-                // Mes interventions récentes
                 'recent_interventions' => (clone $myInterventions)
                     ->with([
                         'maintenance.equipment'
@@ -203,21 +177,13 @@ class DashboardController extends Controller
             ]);
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | PERSONNEL
-        |--------------------------------------------------------------------------
-        */
         if ($user->role === 'personnel') {
 
-            // Demandes créées par le personnel connecté
             $myDemands = Demand::where(
                 'user_id',
                 $user->id
             );
 
-            // Alertes du personnel connecté
             $myAlerts = Alert::where(
                 'user_id',
                 $user->id
@@ -227,7 +193,6 @@ class DashboardController extends Controller
 
                 'role' => 'personnel',
 
-                // Équipements généraux
                 'equipment' => Equipment::count(),
 
                 'equipements_operationnels' => Equipment::where(
@@ -235,7 +200,6 @@ class DashboardController extends Controller
                     'operationnel'
                 )->count(),
 
-                // Mes demandes
                 'demandes' => (clone $myDemands)->count(),
 
                 'demandes_en_attente' => (clone $myDemands)
@@ -262,7 +226,6 @@ class DashboardController extends Controller
                     )
                     ->count(),
 
-                // Alertes
                 'alerts' => (clone $myAlerts)->count(),
 
                 'unread_alerts' => (clone $myAlerts)
@@ -272,7 +235,6 @@ class DashboardController extends Controller
                     )
                     ->count(),
 
-                // Mes dernières demandes
                 'recent_demands' => (clone $myDemands)
                     ->with([
                         'equipment',
@@ -286,14 +248,6 @@ class DashboardController extends Controller
                     ->get(),
             ]);
         }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | ROLE INCONNU
-        |--------------------------------------------------------------------------
-        */
-
         return response()->json([
             'message' => 'Rôle non autorisé'
         ], 403);

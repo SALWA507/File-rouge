@@ -2,17 +2,10 @@ import { useEffect, useState } from "react";
 import api from "../../api";
 
 function Interventions() {
-    // =========================
-    // USER CONNECTÉ
-    // =========================
-
+   
     const storedUser = localStorage.getItem("user");
     const user = storedUser ? JSON.parse(storedUser) : null;
     const role = user?.role;
-
-    // =========================
-    // STATES
-    // =========================
 
     const [interventions, setInterventions] = useState([]);
     const [maintenances, setMaintenances] = useState([]);
@@ -33,10 +26,6 @@ function Interventions() {
         status: "assigned",
     });
 
-    // =========================
-    // GET INTERVENTIONS
-    // =========================
-
     useEffect(() => {
         api.get("/interventions")
             .then((response) => {
@@ -50,11 +39,6 @@ function Interventions() {
             });
     }, []);
 
-    // =========================
-    // GET MAINTENANCES
-    // + TECHNICIENS POUR ADMIN
-    // =========================
-
     useEffect(() => {
         api.get("/maintenances")
             .then((response) => {
@@ -67,7 +51,7 @@ function Interventions() {
                 );
             });
 
-        // Seulement admin a besoin de la liste des techniciens
+      
         if (role === "admin") {
             api.get("/users")
                 .then((response) => {
@@ -85,11 +69,6 @@ function Interventions() {
                 });
         }
     }, [role]);
-
-    // =========================
-    // AJOUTER INTERVENTION
-    // ADMIN SEULEMENT
-    // =========================
 
     const addNewIntervention = async () => {
         if (role !== "admin") {
@@ -146,10 +125,6 @@ function Interventions() {
         }
     };
 
-    // =========================
-    // MODIFIER INTERVENTION
-    // ADMIN + TECHNICIEN
-    // =========================
 
     const updateIntervention = async () => {
         if (
@@ -216,10 +191,6 @@ function Interventions() {
         }
     };
 
-    // =========================
-    // SUPPRIMER INTERVENTION
-    // ADMIN SEULEMENT
-    // =========================
 
     const deleteIntervention = async (id) => {
         if (role !== "admin") {
@@ -259,10 +230,6 @@ function Interventions() {
         }
     };
 
-    // =========================
-    // OUVRIR MODAL MODIFICATION
-    // =========================
-
     const openEditModal = (intervention) => {
         setSelectedIntervention({
             ...intervention,
@@ -279,18 +246,10 @@ function Interventions() {
         setEditIntervention(true);
     };
 
-    // =========================
-    // FERMER MODAL
-    // =========================
-
     const closeEditModal = () => {
         setEditIntervention(false);
         setSelectedIntervention(null);
     };
-
-    // =========================
-    // TRADUIRE LE STATUS
-    // =========================
 
     const getStatusLabel = (status) => {
         switch (status) {
@@ -311,16 +270,9 @@ function Interventions() {
         }
     };
 
-    // =========================
-    // RENDER
-    // =========================
-
     return (
         <div className="min-h-screen bg-[#F8FAFC] p-8">
 
-            {/* =========================
-                HEADER
-            ========================= */}
 
             <div className="flex items-center justify-between mb-8">
                 <div>
@@ -333,7 +285,6 @@ function Interventions() {
                     </p>
                 </div>
 
-                {/* ADMIN SEULEMENT */}
 
                 {role === "admin" && (
                     <button
@@ -347,9 +298,6 @@ function Interventions() {
                 )}
             </div>
 
-            {/* =========================
-                LISTE INTERVENTIONS
-            ========================= */}
 
             {interventions.length === 0 ? (
                 <div className="bg-white rounded-2xl p-8 text-center border">
@@ -366,7 +314,6 @@ function Interventions() {
                             className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col"
                         >
 
-                            {/* ICON */}
 
                             <div className="w-12 h-12 rounded-xl bg-[#E6F8F7] flex items-center justify-center mb-5">
                                 <span className="text-2xl">
@@ -374,13 +321,10 @@ function Interventions() {
                                 </span>
                             </div>
 
-                            {/* TITLE */}
-
                             <h2 className="text-lg font-semibold text-gray-800">
                                 Intervention #{intervention.id}
                             </h2>
 
-                            {/* STATUS */}
 
                             <div className="mt-3">
                                 <span className="px-3 py-1 rounded-full text-sm bg-[#E6F8F7] text-[#0F7C7C]">
@@ -390,7 +334,6 @@ function Interventions() {
                                 </span>
                             </div>
 
-                            {/* TECHNICIEN */}
 
                             <div className="mt-4">
                                 <p className="text-xs text-gray-400">
@@ -403,7 +346,6 @@ function Interventions() {
                                 </p>
                             </div>
 
-                            {/* MAINTENANCE */}
 
                             <div className="mt-4">
                                 <p className="text-xs text-gray-400">
@@ -416,14 +358,12 @@ function Interventions() {
                                 </p>
                             </div>
 
-                            {/* DESCRIPTION */}
 
                             <p className="text-gray-500 text-sm mt-4">
                                 {intervention.description ||
                                     "Aucune description"}
                             </p>
 
-                            {/* START DATE */}
 
                             <p className="text-gray-400 text-sm mt-3">
                                 Début :{" "}
@@ -434,7 +374,6 @@ function Interventions() {
                                     : "-"}
                             </p>
 
-                            {/* END DATE */}
 
                             <p className="text-gray-400 text-sm mt-2">
                                 Fin :{" "}
@@ -445,11 +384,9 @@ function Interventions() {
                                     : "-"}
                             </p>
 
-                            {/* ACTIONS */}
 
                             <div className="mt-5 space-y-2">
 
-                                {/* ADMIN + TECHNICIEN */}
 
                                 {(role === "admin" ||
                                     role === "technicien") && (
@@ -464,8 +401,6 @@ function Interventions() {
                                         Modifier
                                     </button>
                                 )}
-
-                                {/* ADMIN SEULEMENT */}
 
                                 {role === "admin" && (
                                     <button
@@ -485,9 +420,6 @@ function Interventions() {
                 </div>
             )}
 
-            {/* =====================================================
-                MODAL AJOUT
-            ===================================================== */}
 
             {addIntervention &&
                 role === "admin" && (
@@ -495,19 +427,15 @@ function Interventions() {
 
                         <div className="bg-white rounded-2xl w-full max-w-md">
 
-                            {/* HEADER */}
-
                             <div className="px-6 py-5 border-b">
                                 <h2 className="text-xl font-semibold">
                                     Ajouter une intervention
                                 </h2>
                             </div>
 
-                            {/* BODY */}
 
                             <div className="p-6 space-y-4">
 
-                                {/* MAINTENANCE */}
 
                                 <select
                                     value={
@@ -545,7 +473,6 @@ function Interventions() {
                                     )}
                                 </select>
 
-                                {/* TECHNICIEN */}
 
                                 <select
                                     value={
@@ -580,7 +507,6 @@ function Interventions() {
                                     )}
                                 </select>
 
-                                {/* START */}
 
                                 <input
                                     type="datetime-local"
@@ -597,7 +523,6 @@ function Interventions() {
                                     className="w-full border rounded-lg px-3 py-2"
                                 />
 
-                                {/* END */}
 
                                 <input
                                     type="datetime-local"
@@ -614,7 +539,6 @@ function Interventions() {
                                     className="w-full border rounded-lg px-3 py-2"
                                 />
 
-                                {/* STATUS */}
 
                                 <select
                                     value={
@@ -634,7 +558,6 @@ function Interventions() {
                                     </option>
                                 </select>
 
-                                {/* DESCRIPTION */}
 
                                 <textarea
                                     rows="3"
@@ -653,7 +576,6 @@ function Interventions() {
                                 />
                             </div>
 
-                            {/* FOOTER */}
 
                             <div className="flex justify-end gap-3 px-6 py-4 border-t">
 
@@ -679,9 +601,6 @@ function Interventions() {
                     </div>
                 )}
 
-            {/* =====================================================
-                MODAL MODIFICATION
-            ===================================================== */}
 
             {editIntervention &&
                 selectedIntervention && (
@@ -689,7 +608,6 @@ function Interventions() {
 
                         <div className="bg-white rounded-2xl w-full max-w-md">
 
-                            {/* HEADER */}
 
                             <div className="px-6 py-5 border-b">
                                 <h2 className="text-xl font-semibold">
@@ -698,11 +616,8 @@ function Interventions() {
                                 </h2>
                             </div>
 
-                            {/* BODY */}
-
                             <div className="p-6 space-y-4">
 
-                                {/* MAINTENANCE */}
 
                                 <select
                                     value={
@@ -741,7 +656,6 @@ function Interventions() {
                                     )}
                                 </select>
 
-                                {/* TECHNICIEN */}
 
                                 {role === "admin" ? (
                                     <select
@@ -793,7 +707,6 @@ function Interventions() {
                                     />
                                 )}
 
-                                {/* START */}
 
                                 <input
                                     type="datetime-local"
@@ -811,7 +724,6 @@ function Interventions() {
                                     className="w-full border rounded-lg px-3 py-2"
                                 />
 
-                                {/* END */}
 
                                 <input
                                     type="datetime-local"
@@ -829,7 +741,6 @@ function Interventions() {
                                     className="w-full border rounded-lg px-3 py-2"
                                 />
 
-                                {/* STATUS */}
 
                                 <select
                                     value={
@@ -908,7 +819,6 @@ function Interventions() {
                                     )}
                                 </select>
 
-                                {/* DESCRIPTION */}
 
                                 <textarea
                                     rows="3"
@@ -928,7 +838,6 @@ function Interventions() {
                                 />
                             </div>
 
-                            {/* FOOTER */}
 
                             <div className="flex justify-end gap-3 px-6 py-4 border-t">
 

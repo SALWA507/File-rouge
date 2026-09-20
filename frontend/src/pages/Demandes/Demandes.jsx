@@ -3,15 +3,10 @@ import { useEffect, useState } from "react";
 import api from "../../api";
 
 function Demandes() {
-    // =========================
-    // USER CONNECTÉ
-    // =========================
+  
     const user = JSON.parse(localStorage.getItem("user"));
     const role = user?.role;
 
-    // =========================
-    // STATES
-    // =========================
     const [demands, setDemands] = useState([]);
     const [equipments, setEquipments] = useState([]);
     const [technicians, setTechnicians] = useState([]);
@@ -29,9 +24,6 @@ function Demandes() {
         priority: "normal",
     });
 
-    // =========================
-    // GET DEMANDS
-    // =========================
     useEffect(() => {
         api.get("/demands")
             .then((response) => {
@@ -48,9 +40,6 @@ function Demandes() {
             });
     }, []);
 
-    // =========================
-    // GET EQUIPMENTS
-    // =========================
     useEffect(() => {
         api.get("/equipment")
             .then((response) => {
@@ -64,10 +53,6 @@ function Demandes() {
             });
     }, []);
 
-    // =========================
-    // GET TECHNICIENS
-    // UNIQUEMENT ADMIN
-    // =========================
     useEffect(() => {
         if (role !== "admin") {
             return;
@@ -89,10 +74,6 @@ function Demandes() {
             });
     }, [role]);
 
-    // =========================
-    // AJOUTER UNE DEMANDE
-    // PERSONNEL UNIQUEMENT
-    // =========================
     const addNewDemand = async () => {
         if (
             !newDemand.equipment_id ||
@@ -141,10 +122,6 @@ function Demandes() {
         }
     };
 
-    // =========================
-    // MODIFIER
-    // ADMIN UNIQUEMENT
-    // =========================
     const updateDemand = async () => {
         try {
             const data = {
@@ -199,10 +176,6 @@ function Demandes() {
         }
     };
 
-    // =========================
-    // SUPPRIMER
-    // ADMIN UNIQUEMENT
-    // =========================
     const deleteDemand = async (id) => {
         const confirmation = window.confirm(
             "Êtes-vous sûre de vouloir supprimer cette demande ?"
@@ -239,9 +212,6 @@ function Demandes() {
     return (
         <div className="min-h-screen bg-[#F8FAFC] p-8">
 
-            {/* =========================
-                HEADER
-            ========================= */}
             <div className="flex items-center justify-between mb-8">
 
                 <div>
@@ -254,9 +224,6 @@ function Demandes() {
                     </p>
                 </div>
 
-                {/* AJOUTER
-                    PERSONNEL UNIQUEMENT
-                */}
                 {role === "personnel" && (
                     <button
                         onClick={() =>
@@ -270,9 +237,6 @@ function Demandes() {
 
             </div>
 
-            {/* =========================
-                LOADING SKELETON
-            ========================= */}
             {loading ? (
 
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -283,29 +247,20 @@ function Demandes() {
                             className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 animate-pulse"
                         >
 
-                            {/* Icon */}
                             <div className="w-12 h-12 rounded-xl bg-gray-200 mb-5"></div>
 
-                            {/* Title */}
                             <div className="h-5 bg-gray-200 rounded w-40"></div>
 
-                            {/* Priority */}
                             <div className="h-6 bg-gray-200 rounded-full w-28 mt-4"></div>
 
-                            {/* Status */}
                             <div className="h-6 bg-gray-200 rounded-full w-24 mt-3"></div>
 
-                            {/* Equipment */}
                             <div className="h-4 bg-gray-200 rounded w-44 mt-5"></div>
 
-                            {/* Technician */}
                             <div className="h-4 bg-gray-200 rounded w-40 mt-3"></div>
 
-                            {/* Description */}
                             <div className="h-4 bg-gray-200 rounded w-full mt-4"></div>
-                            <div className="h-4 bg-gray-200 rounded w-3/4 mt-2"></div>
-
-                            {/* Buttons */}
+                  
                             <div className="h-10 bg-gray-200 rounded-xl mt-5"></div>
                             <div className="h-10 bg-gray-200 rounded-xl mt-2"></div>
 
@@ -316,9 +271,6 @@ function Demandes() {
 
             ) : demands.length === 0 ? (
 
-                /* =========================
-                    AUCUNE DEMANDE
-                ========================= */
                 <div className="bg-white rounded-2xl p-8 text-center border">
 
                     <p className="text-gray-500">
@@ -329,9 +281,6 @@ function Demandes() {
 
             ) : (
 
-                /* =========================
-                    LISTE DES DEMANDES
-                ========================= */
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
                     {demands.map((demand) => (
@@ -341,7 +290,6 @@ function Demandes() {
                             className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 p-6 flex flex-col h-full"
                         >
 
-                            {/* ICON */}
                             <div className="w-12 h-12 rounded-xl bg-[#E6F8F7] flex items-center justify-center mb-5">
 
                                 <span className="text-2xl">
@@ -350,12 +298,10 @@ function Demandes() {
 
                             </div>
 
-                            {/* TITLE */}
                             <h2 className="text-lg font-semibold text-gray-800">
                                 {demand.title}
                             </h2>
 
-                            {/* PRIORITY */}
                             <div className="mt-3">
 
                                 <span className="px-3 py-1 rounded-full text-sm bg-orange-50 text-orange-600">
@@ -365,7 +311,6 @@ function Demandes() {
 
                             </div>
 
-                            {/* STATUS */}
                             <div className="mt-3">
 
                                 <span className="px-3 py-1 rounded-full text-sm bg-[#E6F8F7] text-[#0F7C7C]">
@@ -374,7 +319,6 @@ function Demandes() {
 
                             </div>
 
-                            {/* EQUIPMENT */}
                             <p className="text-gray-500 text-sm mt-4">
 
                                 Équipement :{" "}
@@ -384,7 +328,7 @@ function Demandes() {
 
                             </p>
 
-                            {/* TECHNICIEN */}
+                       
                             <p className="text-gray-500 text-sm mt-2">
 
                                 Technicien :{" "}
@@ -394,19 +338,14 @@ function Demandes() {
 
                             </p>
 
-                            {/* DESCRIPTION */}
                             <p className="text-gray-500 text-sm mt-3">
 
                                 {demand.description}
 
                             </p>
 
-                            {/* BUTTONS */}
                             <div className="mt-auto pt-5 space-y-2">
 
-                                {/* MODIFIER
-                                    ADMIN UNIQUEMENT
-                                */}
                                 {role === "admin" && (
                                     <button
                                         onClick={() => {
@@ -426,9 +365,7 @@ function Demandes() {
                                     </button>
                                 )}
 
-                                {/* SUPPRIMER
-                                    ADMIN UNIQUEMENT
-                                */}
+                               
                                 {role === "admin" && (
                                     <button
                                         onClick={() =>
@@ -451,10 +388,6 @@ function Demandes() {
                 </div>
             )}
 
-            {/* =========================
-                MODAL AJOUT
-                PERSONNEL
-            ========================= */}
             {addDemand && role === "personnel" && (
 
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
@@ -471,7 +404,6 @@ function Demandes() {
 
                         <div className="p-6 space-y-4">
 
-                            {/* EQUIPMENT */}
                             <select
                                 value={
                                     newDemand.equipment_id
@@ -509,7 +441,6 @@ function Demandes() {
 
                             </select>
 
-                            {/* TITLE */}
                             <input
                                 type="text"
                                 value={
@@ -526,7 +457,6 @@ function Demandes() {
                                 className="w-full border rounded-lg px-3 py-2"
                             />
 
-                            {/* PRIORITY */}
                             <select
                                 value={
                                     newDemand.priority
@@ -559,7 +489,6 @@ function Demandes() {
 
                             </select>
 
-                            {/* DESCRIPTION */}
                             <textarea
                                 rows="4"
                                 value={
@@ -605,10 +534,6 @@ function Demandes() {
                 </div>
             )}
 
-            {/* =========================
-                MODAL MODIFICATION
-                ADMIN
-            ========================= */}
             {editDemand &&
                 selectedDemand &&
                 role === "admin" && (
@@ -627,7 +552,6 @@ function Demandes() {
 
                             <div className="p-6 space-y-4">
 
-                                {/* EQUIPMENT */}
                                 <select
                                     value={
                                         selectedDemand.equipment_id
@@ -661,7 +585,6 @@ function Demandes() {
 
                                 </select>
 
-                                {/* TECHNICIEN */}
                                 <select
                                     value={
                                         selectedDemand.technician_id ||
@@ -701,7 +624,6 @@ function Demandes() {
 
                                 </select>
 
-                                {/* TITLE */}
                                 <input
                                     type="text"
                                     value={
@@ -717,7 +639,6 @@ function Demandes() {
                                     className="w-full border rounded-lg px-3 py-2"
                                 />
 
-                                {/* PRIORITY */}
                                 <select
                                     value={
                                         selectedDemand.priority
@@ -750,7 +671,6 @@ function Demandes() {
 
                                 </select>
 
-                                {/* STATUS */}
                                 <select
                                     value={
                                         selectedDemand.status
@@ -787,7 +707,6 @@ function Demandes() {
 
                                 </select>
 
-                                {/* DESCRIPTION */}
                                 <textarea
                                     rows="4"
                                     value={

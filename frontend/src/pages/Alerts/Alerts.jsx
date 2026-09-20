@@ -84,7 +84,6 @@ function Alerts() {
                 )
             );
 
-            // Informer le Sidebar que le nombre d'alertes a changé
             window.dispatchEvent(new Event("alertsUpdated"));
         } catch (err) {
             console.error(err);
@@ -96,10 +95,6 @@ function Alerts() {
         }
     };
 
-    // =========================
-    // LOADING
-    // =========================
-
     if (loading) {
         return (
             <div className="p-6">
@@ -110,14 +105,9 @@ function Alerts() {
         );
     }
 
-    // =========================
-    // PAGE
-    // =========================
-
     return (
         <div className="p-6">
-            {/* HEADER */}
-
+       
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h1 className="text-2xl font-bold text-[#172033]">
@@ -139,15 +129,11 @@ function Alerts() {
                 </div>
             </div>
 
-            {/* ERROR */}
-
             {error && (
                 <div className="mb-4 p-4 rounded-lg bg-red-50 text-red-600">
                     {error}
                 </div>
             )}
-
-            {/* EMPTY */}
 
             {alerts.length === 0 ? (
                 <div className="bg-white rounded-xl border border-gray-200 p-10 text-center">
@@ -172,8 +158,6 @@ function Alerts() {
                             }`}
                         >
                             <div className="flex items-start justify-between gap-4">
-
-                                {/* ALERT INFO */}
 
                                 <div className="flex gap-4">
                                     <div className="w-10 h-10 rounded-full bg-[#13B8B0]/10 flex items-center justify-center flex-shrink-0">
@@ -217,11 +201,7 @@ function Alerts() {
                                     </div>
                                 </div>
 
-                                {/* ACTIONS */}
-
                                 <div className="flex items-center gap-2 flex-shrink-0">
-
-                                    {/* MARQUER COMME LU */}
 
                                     {!alertItem.isRead && (
                                         <button
@@ -239,7 +219,6 @@ function Alerts() {
                                         </button>
                                     )}
 
-                                    {/* SUPPRIMER - ADMIN SEULEMENT */}
 
                                     {role === "admin" && (
                                         <button

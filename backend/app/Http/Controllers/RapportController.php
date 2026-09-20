@@ -9,12 +9,10 @@ use Illuminate\Http\Request;
 
 class RapportController extends Controller
 {
-    /**
-     * Rapport général
-     */
+
     public function index(Request $request)
     {
-        // Rapports réservés à l'administrateur
+
         if ($request->user()->role !== 'admin') {
             return response()->json([
                 'message' => 'Accès interdit'
@@ -46,14 +44,11 @@ class RapportController extends Controller
         ]);
     }
 
-    /**
-     * Historique d'un équipement
-     */
     public function equipmentHistory(
         Request $request,
         string $id
     ) {
-        // Rapports réservés à l'administrateur
+  
         if ($request->user()->role !== 'admin') {
             return response()->json([
                 'message' => 'Accès interdit'

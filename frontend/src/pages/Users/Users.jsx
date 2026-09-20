@@ -91,7 +91,6 @@ function Users() {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // Vérifier la confirmation du mot de passe
         if (
             !editingUser &&
             formData.password !== formData.password_confirmation
@@ -100,9 +99,6 @@ function Users() {
             return;
         }
 
-        // Pour la modification :
-        // si un nouveau mot de passe est renseigné,
-        // on vérifie également sa confirmation.
         if (
             editingUser &&
             formData.password &&
@@ -118,14 +114,12 @@ function Users() {
             role: formData.role,
         };
 
-        // Création
         if (!editingUser) {
             data.password = formData.password;
             data.password_confirmation =
                 formData.password_confirmation;
         }
 
-        // Modification
         if (editingUser && formData.password) {
             data.password = formData.password;
         }
@@ -247,7 +241,7 @@ function Users() {
 
     return (
         <div className="min-h-screen bg-[#F8FAFC] p-8">
-            {/* Header */}
+   
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-800">
@@ -269,7 +263,6 @@ function Users() {
                 </button>
             </div>
 
-            {/* Search */}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-6">
                 <div className="relative">
                     <Search
@@ -289,7 +282,6 @@ function Users() {
                 </div>
             </div>
 
-            {/* Users table */}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="px-6 py-5 border-b border-gray-100">
                     <div className="flex items-center gap-3">
@@ -458,12 +450,11 @@ function Users() {
                             </button>
                         </div>
 
-                        {/* Form */}
                         <form
                             onSubmit={handleSubmit}
                             className="p-6 space-y-5"
                         >
-                            {/* Name */}
+
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Nom complet
@@ -480,7 +471,7 @@ function Users() {
                                 />
                             </div>
 
-                            {/* Email */}
+
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Email
@@ -497,7 +488,6 @@ function Users() {
                                 />
                             </div>
 
-                            {/* Password */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     {editingUser
@@ -520,7 +510,6 @@ function Users() {
                                 />
                             </div>
 
-                            {/* Password confirmation */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     {editingUser
@@ -541,7 +530,6 @@ function Users() {
                                 />
                             </div>
 
-                            {/* Role */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Rôle
@@ -567,7 +555,6 @@ function Users() {
                                 </select>
                             </div>
 
-                            {/* Buttons */}
                             <div className="flex justify-end gap-3 pt-3">
                                 <button
                                     type="button"

@@ -10,9 +10,6 @@ function Rapports() {
     const [historyLoading, setHistoryLoading] = useState(false);
     const [error, setError] = useState("");
 
-    // =========================
-    // RÉCUPÉRER LES ÉQUIPEMENTS
-    // =========================
     useEffect(() => {
         const fetchEquipments = async () => {
             try {
@@ -43,9 +40,6 @@ function Rapports() {
         fetchEquipments();
     }, []);
 
-    // =========================
-    // HISTORIQUE ÉQUIPEMENT
-    // =========================
     useEffect(() => {
         if (!selectedEquipment) {
             setEquipmentHistory(null);
@@ -77,9 +71,6 @@ function Rapports() {
         fetchEquipmentHistory();
     }, [selectedEquipment]);
 
-    // =========================
-    // LOADING
-    // =========================
     if (loading) {
         return (
             <div className="min-h-screen bg-[#F8FAFC] p-8">
@@ -92,9 +83,6 @@ function Rapports() {
         );
     }
 
-    // =========================
-    // ERREUR
-    // =========================
     if (error) {
         return (
             <div className="min-h-screen bg-[#F8FAFC] p-8">
@@ -118,9 +106,6 @@ function Rapports() {
     return (
         <div className="min-h-screen bg-[#F8FAFC] p-8">
 
-            {/* =========================
-                HEADER
-            ========================= */}
             <div className="mb-8">
                 <h1 className="text-3xl font-bold text-gray-800">
                     Rapports
@@ -132,9 +117,6 @@ function Rapports() {
                 </p>
             </div>
 
-            {/* =========================
-                SÉLECTION ÉQUIPEMENT
-            ========================= */}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-8">
 
                 <div className="flex items-center gap-3 mb-4">
@@ -189,9 +171,6 @@ function Rapports() {
                 </select>
             </div>
 
-            {/* =========================
-                EMPTY STATE
-            ========================= */}
             {!selectedEquipment && (
                 <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-12 text-center">
 
@@ -223,9 +202,6 @@ function Rapports() {
                 </div>
             )}
 
-            {/* =========================
-                LOADING HISTORIQUE
-            ========================= */}
             {historyLoading && (
                 <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-10 text-center">
                     <p className="text-gray-500">
@@ -234,15 +210,9 @@ function Rapports() {
                 </div>
             )}
 
-            {/* =========================
-                CONTENU HISTORIQUE
-            ========================= */}
             {equipment && !historyLoading && (
                 <div className="space-y-8">
 
-                    {/* =========================
-                        INFORMATIONS ÉQUIPEMENT
-                    ========================= */}
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
 
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -412,9 +382,6 @@ function Rapports() {
                         </div>
                     </div>
 
-                    {/* =========================
-                        INTERVENTIONS
-                    ========================= */}
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm">
 
                         <div className="p-6 border-b border-gray-100">

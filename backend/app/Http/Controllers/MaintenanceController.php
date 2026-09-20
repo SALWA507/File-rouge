@@ -78,12 +78,10 @@ class MaintenanceController extends Controller
 
     $user = $request->user();
 
-    // Admin يشوف كلشي
     if ($user->role === 'admin') {
         return response()->json($maintenance);
     }
 
-    // Technicien يشوف غير maintenance المرتبطة بـ intervention ديالو
     if ($user->role === 'technicien') {
 
         $hasAccess = $maintenance->interventions()
@@ -116,14 +114,12 @@ class MaintenanceController extends Controller
 
     $user = $request->user();
 
-    // Personnel ممنوع
     if ($user->role === 'personnel') {
         return response()->json([
             'message' => 'Accès interdit'
         ], 403);
     }
 
-    // Technicien يقدر يعدل غير maintenance المرتبطة بـ intervention ديالو
     if ($user->role === 'technicien') {
 
         $hasAccess = $maintenance->interventions()

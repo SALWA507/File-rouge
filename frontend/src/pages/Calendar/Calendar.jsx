@@ -3,16 +3,8 @@ import api from "../../api";
 
 function Calendar() {
 
-    // =========================
-    // USER CONNECTÉ
-    // =========================
-
     const user = JSON.parse(localStorage.getItem("user"));
     const role = user?.role;
-
-    // =========================
-    // STATES
-    // =========================
 
     const [maintenances, setMaintenances] = useState([]);
 
@@ -23,10 +15,6 @@ function Calendar() {
     const [selectedDate, setSelectedDate] = useState(
         new Date().getDate()
     );
-
-    // =========================
-    // GET MAINTENANCES
-    // =========================
 
     useEffect(() => {
 
@@ -43,10 +31,6 @@ function Calendar() {
 
     }, []);
 
-    // =========================
-    // DATE
-    // =========================
-
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
 
@@ -58,9 +42,6 @@ function Calendar() {
         }
     );
 
-    // =========================
-    // DAYS
-    // =========================
 
     const firstDay = new Date(
         year,
@@ -93,10 +74,6 @@ function Calendar() {
         days.push(day);
     }
 
-    // =========================
-    // MAINTENANCE DU JOUR
-    // =========================
-
     const getMaintenance = (day) => {
 
         return maintenances.find(
@@ -115,10 +92,6 @@ function Calendar() {
         );
     };
 
-    // =========================
-    // MOIS PRECEDENT
-    // =========================
-
     const previousMonth = () => {
 
         setCurrentDate(
@@ -131,10 +104,6 @@ function Calendar() {
 
         setSelectedDate(1);
     };
-
-    // =========================
-    // MOIS SUIVANT
-    // =========================
 
     const nextMonth = () => {
 
@@ -153,8 +122,6 @@ function Calendar() {
 
         <div className="min-h-screen bg-[#F8FAFC] p-8">
 
-            {/* HEADER */}
-
             <div className="mb-8">
 
                 <h1 className="text-3xl font-bold text-gray-800">
@@ -169,11 +136,7 @@ function Calendar() {
 
             </div>
 
-            {/* CALENDAR */}
-
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-
-                {/* MONTH */}
 
                 <div className="flex items-center justify-between mb-6">
 
@@ -197,7 +160,6 @@ function Calendar() {
 
                 </div>
 
-                {/* DAYS HEADER */}
 
                 <div className="grid grid-cols-7 text-center mb-3">
 
@@ -221,8 +183,6 @@ function Calendar() {
                     ))}
 
                 </div>
-
-                {/* DAYS */}
 
                 <div className="grid grid-cols-7 gap-2">
 
@@ -286,8 +246,6 @@ function Calendar() {
                 </div>
 
             </div>
-
-            {/* MAINTENANCE DU JOUR */}
 
             <div className="mt-6">
 

@@ -26,10 +26,6 @@ function Dashboard() {
             });
     }, []);
 
-    // =========================
-    // LOADING
-    // =========================
-
     if (!data) {
         return (
             <div className="min-h-screen bg-[#F8FAFC] p-8 w-full">
@@ -39,10 +35,6 @@ function Dashboard() {
             </div>
         );
     }
-
-    // =========================
-    // STATUS INTERVENTION
-    // =========================
 
     const getInterventionStatus = (status) => {
         switch (status) {
@@ -78,10 +70,6 @@ function Dashboard() {
         }
     };
 
-    // =========================
-    // STATUS MAINTENANCE
-    // =========================
-
     const getMaintenanceStatus = (status) => {
         switch (status) {
             case "planned":
@@ -109,10 +97,6 @@ function Dashboard() {
                 };
         }
     };
-
-    // =========================
-    // STATUS DEMANDE
-    // =========================
 
     const getDemandStatus = (status) => {
         switch (status) {
@@ -148,10 +132,6 @@ function Dashboard() {
         }
     };
 
-    // =========================
-    // HEADER
-    // =========================
-
     const getHeaderText = () => {
         if (data.role === "admin") {
             return "Bienvenue sur BioMaintenix. Voici l'état global de la plateforme.";
@@ -168,46 +148,35 @@ function Dashboard() {
         return "Bienvenue sur BioMaintenix.";
     };
 
-    // =========================
-    // ADMIN DASHBOARD
-    // =========================
-
     const renderAdminDashboard = () => (
         <>
-            {/* STATISTICS */}
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-8">
 
-                {/* Total équipements */}
                 <StatCard
                     title="Total des équipements"
                     value={data.equipment}
                     icon={<Monitor size={24} />}
                 />
 
-                {/* Interventions en cours */}
                 <StatCard
                     title="Interventions en cours"
                     value={data.interventions_en_cours}
                     icon={<Wrench size={24} />}
                 />
 
-                {/* Interventions terminées */}
                 <StatCard
                     title="Interventions terminées"
                     value={data.interventions_terminees}
                     icon={<CheckCircle size={24} />}
                 />
 
-                {/* Équipements opérationnels */}
                 <StatCard
                     title="Équipements opérationnels"
                     value={data.equipements_operationnels}
                     icon={<Monitor size={24} />}
                 />
             </div>
-
-            {/* ALERTES */}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
 
@@ -224,11 +193,8 @@ function Dashboard() {
                 />
             </div>
 
-            {/* MAINTENANCE + INTERVENTIONS */}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
-
-                {/* Maintenances */}
 
                 <MaintenanceList
                     maintenances={data.upcoming_maintenances}
@@ -236,7 +202,6 @@ function Dashboard() {
                     description="Les prochaines maintenances planifiées"
                 />
 
-                {/* Interventions */}
 
                 <InterventionList
                     interventions={data.recent_interventions}
@@ -249,38 +214,31 @@ function Dashboard() {
         </>
     );
 
-    // =========================
-    // TECHNICIEN DASHBOARD
-    // =========================
 
     const renderTechnicianDashboard = () => (
         <>
-            {/* STATISTICS */}
+ 
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-8">
 
-                {/* Mes interventions */}
                 <StatCard
                     title="Mes interventions"
                     value={data.interventions}
                     icon={<Wrench size={24} />}
                 />
 
-                {/* En cours */}
                 <StatCard
                     title="Interventions en cours"
                     value={data.interventions_en_cours}
                     icon={<Clock size={24} />}
                 />
 
-                {/* Terminées */}
                 <StatCard
                     title="Interventions terminées"
                     value={data.interventions_terminees}
                     icon={<CheckCircle size={24} />}
                 />
 
-                {/* Maintenances */}
                 <StatCard
                     title="Mes maintenances"
                     value={data.maintenances}
@@ -288,7 +246,6 @@ function Dashboard() {
                 />
             </div>
 
-            {/* SECOND ROW */}
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
 
@@ -311,7 +268,6 @@ function Dashboard() {
                 />
             </div>
 
-            {/* MAINTENANCE + INTERVENTIONS */}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
 
@@ -332,38 +288,30 @@ function Dashboard() {
         </>
     );
 
-    // =========================
-    // PERSONNEL DASHBOARD
-    // =========================
-
     const renderPersonnelDashboard = () => (
         <>
-            {/* STATISTICS */}
+
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-8">
 
-                {/* Total équipements */}
                 <StatCard
                     title="Total des équipements"
                     value={data.equipment}
                     icon={<Monitor size={24} />}
                 />
 
-                {/* Équipements opérationnels */}
                 <StatCard
                     title="Équipements opérationnels"
                     value={data.equipements_operationnels}
                     icon={<CheckCircle size={24} />}
                 />
 
-                {/* Mes demandes */}
                 <StatCard
                     title="Mes demandes"
                     value={data.demandes}
                     icon={<FileText size={24} />}
                 />
 
-                {/* Demandes en attente */}
                 <StatCard
                     title="Demandes en attente"
                     value={data.demandes_en_attente}
@@ -371,7 +319,6 @@ function Dashboard() {
                 />
             </div>
 
-            {/* DEMANDES */}
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
 
@@ -394,7 +341,6 @@ function Dashboard() {
                 />
             </div>
 
-            {/* MES DEMANDES */}
 
             <div className="mt-8">
 
@@ -406,14 +352,8 @@ function Dashboard() {
         </>
     );
 
-    // =========================
-    // RETURN
-    // =========================
-
     return (
         <div className="min-h-screen bg-[#F8FAFC] p-8 text-gray-800 w-full">
-
-            {/* HEADER */}
 
             <h1 className="text-3xl font-bold text-gray-800">
                 Tableau de bord
@@ -423,7 +363,6 @@ function Dashboard() {
                 {getHeaderText()}
             </p>
 
-            {/* ROLE DASHBOARD */}
 
             {data.role === "admin" && renderAdminDashboard()}
 

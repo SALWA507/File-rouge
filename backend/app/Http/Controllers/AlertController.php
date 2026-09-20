@@ -7,9 +7,6 @@ use Illuminate\Http\Request;
 
 class AlertController extends Controller
 {
-    // =========================
-    // INDEX
-    // =========================
 
     public function index(Request $request)
     {
@@ -33,10 +30,6 @@ class AlertController extends Controller
         return response()->json($alerts);
     }
 
-
-    // =========================
-    // STORE
-    // =========================
 
     public function store(Request $request)
     {
@@ -64,11 +57,6 @@ class AlertController extends Controller
             ]),
         ], 201);
     }
-
-
-    // =========================
-    // SHOW
-    // =========================
 
     public function show(Request $request, string $id)
     {
@@ -98,10 +86,6 @@ class AlertController extends Controller
     }
 
 
-    // =========================
-    // UPDATE
-    // =========================
-
     public function update(Request $request, string $id)
     {
         $alert = Alert::find($id);
@@ -114,7 +98,6 @@ class AlertController extends Controller
 
         $user = $request->user();
 
-        // Admin peut modifier tout
         if ($user->role === 'admin') {
 
             $validated = $request->validate([
@@ -129,8 +112,6 @@ class AlertController extends Controller
 
         }
 
-        // Technicien / Personnel peuvent seulement
-        // modifier isRead sur leur propre alerte
         elseif (
             ($user->role === 'technicien' || $user->role === 'personnel') &&
             $alert->user_id === $user->id
@@ -159,11 +140,6 @@ class AlertController extends Controller
             ]),
         ]);
     }
-
-
-    // =========================
-    // DESTROY
-    // =========================
 
     public function destroy(Request $request, string $id)
     {

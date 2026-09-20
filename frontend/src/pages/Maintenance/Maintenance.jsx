@@ -6,14 +6,11 @@ function Maintenance() {
     const [maintenances, setMaintenances] = useState([]);
     const [equipments, setEquipments] = useState([]);
 
-    // Modal Ajouter
     const [addMaintenance, setAddMaintenance] = useState(false);
 
-    // Modal Modifier
     const [editMaintenance, setEditMaintenance] = useState(false);
     const [selectedMaintenance, setSelectedMaintenance] = useState(null);
 
-    // Nouvelle maintenance
     const [newMaintenance, setNewMaintenance] = useState({
         equipment_id: "",
         type: "",
@@ -22,9 +19,6 @@ function Maintenance() {
         status: "planned",
     });
 
-    // =========================
-    // Récupérer les maintenances
-    // =========================
     useEffect(() => {
         api.get("/maintenances")
             .then((response) => {
@@ -70,9 +64,6 @@ function Maintenance() {
         }
     };
 
-    // =========================
-    // Ajouter maintenance
-    // =========================
     const addNewMaintenance = async () => {
         try {
             const response = await api.post(
@@ -102,9 +93,6 @@ function Maintenance() {
         }
     };
 
-    // =========================
-    // Modifier maintenance
-    // =========================
     const updateMaintenance = async () => {
         try {
             const response = await api.put(
@@ -141,7 +129,7 @@ function Maintenance() {
 
     return (
         <div className="min-h-screen bg-[#F8FAFC] p-8">
-            {/* ================= HEADER ================= */}
+        
             <div className="flex justify-between items-center mb-8">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-800">
@@ -161,7 +149,6 @@ function Maintenance() {
                 </button>
             </div>
 
-            {/* ================= DATA ================= */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {maintenances.length > 0 ? (
                     maintenances.map((maintenance) => (
@@ -169,7 +156,7 @@ function Maintenance() {
                             key={maintenance.id}
                             className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 p-6 flex flex-col h-full"
                         >
-                            {/* Card Header */}
+      
                             <div className="flex items-start justify-between gap-4">
                                 <div className="flex items-center gap-4 min-w-0">
                                     <div className="w-12 h-12 rounded-xl bg-[#E6F8F7] flex items-center justify-center text-xl shrink-0">
@@ -193,7 +180,6 @@ function Maintenance() {
                                 </span>
                             </div>
 
-                            {/* Equipment Reference */}
                             {maintenance.equipment?.reference && (
                                 <div className="mt-4">
                                     <p className="text-xs text-gray-400">
@@ -206,7 +192,6 @@ function Maintenance() {
                                 </div>
                             )}
 
-                            {/* Date */}
                             <div className="mt-4">
                                 <p className="text-xs text-gray-400">
                                     Date prévue
@@ -217,7 +202,6 @@ function Maintenance() {
                                 </p>
                             </div>
 
-                            {/* Description */}
                             <div className="mt-4">
                                 <p className="text-xs text-gray-400">
                                     Description
@@ -228,7 +212,6 @@ function Maintenance() {
                                 </p>
                             </div>
 
-                            {/* Actions */}
                             <div className="mt-auto pt-5 space-y-2">
                                 <button
                                     onClick={() => {
@@ -262,14 +245,11 @@ function Maintenance() {
                 )}
             </div>
 
-            {/* ================================================= */}
-            {/* MODAL AJOUTER */}
-            {/* ================================================= */}
 
             {addMaintenance && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl">
-                        {/* Header */}
+
                         <div className="flex items-center justify-between px-5 py-4 border-b">
                             <div>
                                 <h2 className="text-lg font-bold text-gray-800">
@@ -291,9 +271,8 @@ function Maintenance() {
                             </button>
                         </div>
 
-                        {/* Form */}
                         <div className="px-5 py-4 space-y-3">
-                            {/* Équipement */}
+    
                             <div>
                                 <label className="block text-xs font-medium text-gray-600 mb-1">
                                     Équipement
@@ -328,7 +307,6 @@ function Maintenance() {
                                 </select>
                             </div>
 
-                            {/* Type */}
                             <div>
                                 <label className="block text-xs font-medium text-gray-600 mb-1">
                                     Type
@@ -348,7 +326,6 @@ function Maintenance() {
                                 />
                             </div>
 
-                            {/* Date */}
                             <div>
                                 <label className="block text-xs font-medium text-gray-600 mb-1">
                                     Date prévue
@@ -370,7 +347,6 @@ function Maintenance() {
                                 />
                             </div>
 
-                            {/* Description */}
                             <div>
                                 <label className="block text-xs font-medium text-gray-600 mb-1">
                                     Description
@@ -394,7 +370,6 @@ function Maintenance() {
                             </div>
                         </div>
 
-                        {/* Footer */}
                         <div className="flex justify-end gap-2 px-5 py-4 border-t bg-gray-50 rounded-b-2xl">
                             <button
                                 onClick={() =>
@@ -416,14 +391,11 @@ function Maintenance() {
                 </div>
             )}
 
-            {/* ================================================= */}
-            {/* MODAL MODIFIER */}
-            {/* ================================================= */}
 
             {editMaintenance && selectedMaintenance && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl">
-                        {/* Header */}
+         
                         <div className="flex items-center justify-between px-5 py-4 border-b">
                             <div>
                                 <h2 className="text-lg font-bold text-gray-800">
@@ -446,9 +418,8 @@ function Maintenance() {
                             </button>
                         </div>
 
-                        {/* Form */}
                         <div className="px-5 py-4 space-y-3">
-                            {/* Équipement */}
+         
                             <div>
                                 <label className="block text-xs font-medium text-gray-600 mb-1">
                                     Équipement
@@ -484,7 +455,6 @@ function Maintenance() {
                                 </select>
                             </div>
 
-                            {/* Type */}
                             <div>
                                 <label className="block text-xs font-medium text-gray-600 mb-1">
                                     Type
@@ -505,7 +475,6 @@ function Maintenance() {
                                 />
                             </div>
 
-                            {/* Date */}
                             <div>
                                 <label className="block text-xs font-medium text-gray-600 mb-1">
                                     Date prévue
@@ -532,7 +501,6 @@ function Maintenance() {
                                 />
                             </div>
 
-                            {/* Status */}
                             <div>
                                 <label className="block text-xs font-medium text-gray-600 mb-1">
                                     Statut
@@ -565,7 +533,6 @@ function Maintenance() {
                                 </select>
                             </div>
 
-                            {/* Description */}
                             <div>
                                 <label className="block text-xs font-medium text-gray-600 mb-1">
                                     Description
@@ -589,7 +556,6 @@ function Maintenance() {
                             </div>
                         </div>
 
-                        {/* Footer */}
                         <div className="flex justify-end gap-2 px-5 py-4 border-t bg-gray-50 rounded-b-2xl">
                             <button
                                 onClick={() => {

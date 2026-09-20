@@ -21,31 +21,23 @@ function App() {
         <BrowserRouter>
             <Routes>
 
-                {/* =========================
-                    LANDING PAGE
-                ========================= */}
 
                 <Route
                     path="/"
                     element={<Landing />}
                 />
 
-                {/* =========================
-                    LOGIN
-                ========================= */}
+               
 
                 <Route
                     path="/login"
                     element={<Login />}
                 />
 
-                {/* =========================
-                    PAGES AVEC SIDEBAR
-                ========================= */}
-
+              
                 <Route element={<Layout />}>
 
-                    {/* DASHBOARD */}
+                 
 
                     <Route
                         path="/dashboard"
@@ -62,7 +54,7 @@ function App() {
                         }
                     />
 
-                    {/* ÉQUIPEMENTS */}
+                 
 
                     <Route
                         path="/equipments"
@@ -79,7 +71,7 @@ function App() {
                         }
                     />
 
-                    {/* MAINTENANCE */}
+                
 
                     <Route
                         path="/maintenance"
@@ -95,7 +87,6 @@ function App() {
                         }
                     />
 
-                    {/* INTERVENTIONS */}
 
                     <Route
                         path="/interventions"
@@ -111,7 +102,7 @@ function App() {
                         }
                     />
 
-                    {/* DEMANDES */}
+            
 
                     <Route
                         path="/demandes"
@@ -128,8 +119,7 @@ function App() {
                         }
                     />
 
-                    {/* ALERTES */}
-
+                 
                     <Route
                         path="/alerts"
                         element={
@@ -145,7 +135,7 @@ function App() {
                         }
                     />
 
-                    {/* CALENDRIER */}
+               
 
                     <Route
                         path="/calendrier"
@@ -161,7 +151,6 @@ function App() {
                         }
                     />
 
-                    {/* RAPPORTS */}
 
                     <Route
                         path="/rapports"
@@ -173,8 +162,6 @@ function App() {
                             </ProtectedRoute>
                         }
                     />
-
-                    {/* UTILISATEURS */}
 
                     <Route
                         path="/users"

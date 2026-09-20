@@ -5,22 +5,18 @@ import { Monitor, Trash2 } from "lucide-react";
 function Equipments() {
     const [equipments, setEquipments] = useState([]);
 
-    // Récupérer le rôle de l'utilisateur connecté
     const storedUser = localStorage.getItem("user");
     const user = storedUser ? JSON.parse(storedUser) : null;
     const role = user?.role;
 
     const canManage = role === "admin" || role === "technicien";
 
-    // Search
     const [search, setSearch] = useState("");
 
-    // Modals
     const [selectedEquipment, setSelectedEquipment] = useState(null);
     const [editEquipment, setEditEquipment] = useState(null);
     const [addEquipment, setAddEquipment] = useState(false);
 
-    // New equipment
     const [newEquipment, setNewEquipment] = useState({
         name: "",
         reference: "",
@@ -31,7 +27,6 @@ function Equipments() {
         status: "operationnel",
     });
 
-    // Récupérer les équipements
     useEffect(() => {
         api.get("/equipment")
             .then((response) => {
@@ -42,14 +37,12 @@ function Equipments() {
             });
     }, []);
 
-    // Filtrer les équipements
     const filteredEquipments = equipments.filter((equipment) =>
         equipment.name
             .toLowerCase()
             .includes(search.toLowerCase())
     );
 
-    // Modifier un équipement
     const updateEquipment = async () => {
         try {
             const response = await api.put(
@@ -71,7 +64,6 @@ function Equipments() {
         }
     };
 
-    // Ajouter un équipement
     const addNewEquipment = async () => {
         try {
             const response = await api.post(
@@ -100,7 +92,6 @@ function Equipments() {
         }
     };
 
-    // Supprimer un équipement
     const deleteEquipment = async (id) => {
         const confirmed = window.confirm(
             "Voulez-vous vraiment supprimer cet équipement ?"
@@ -126,7 +117,6 @@ function Equipments() {
     return (
         <div className="min-h-screen bg-[#F8FAFC] p-8">
 
-            {/* Header */}
             <div className="mb-8">
                 <h1 className="text-3xl font-bold text-gray-800">
                     Équipements
@@ -136,7 +126,6 @@ function Equipments() {
                     Gestion des équipements biomédicaux
                 </p>
 
-                {/* Search + Add */}
                 <div className="flex flex-col md:flex-row gap-3 mt-6">
 
                     <input
@@ -159,7 +148,6 @@ function Equipments() {
                 </div>
             </div>
 
-            {/* Equipment Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
                 {filteredEquipments.length > 0 ? (
@@ -171,7 +159,6 @@ function Equipments() {
                             className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200 p-6"
                         >
 
-                            {/* Card Header */}
                             <div className="flex items-start justify-between gap-4">
 
                                 <div className="flex items-center gap-4 min-w-0">
@@ -221,7 +208,6 @@ function Equipments() {
 
                             </div>
 
-                            {/* Serial Number */}
                             <div className="mt-4">
 
                                 <p className="text-xs text-gray-400">
@@ -234,7 +220,6 @@ function Equipments() {
 
                             </div>
 
-                            {/* Location */}
                             <div className="mt-4">
 
                                 <p className="text-xs text-gray-400">
@@ -247,7 +232,6 @@ function Equipments() {
 
                             </div>
 
-                            {/* Actions */}
                             <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-100">
 
                                 <button
@@ -298,7 +282,6 @@ function Equipments() {
 
             </div>
 
-            {/* Details Modal */}
             {selectedEquipment && (
 
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
@@ -595,7 +578,6 @@ function Equipments() {
 
             )}
 
-            {/* Add Equipment Modal */}
             {addEquipment && (
 
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">

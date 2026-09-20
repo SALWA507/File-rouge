@@ -51,10 +51,8 @@ class InterventionController extends Controller
 
     $intervention = Intervention::create($validated);
 
-    // Charger la maintenance et son équipement
     $intervention->load('maintenance');
 
-    // Créer automatiquement une alerte pour le technicien
     Alert::create([
         'user_id' => $intervention->technician_id,
         'equipment_id' => $intervention->maintenance->equipment_id,
@@ -141,20 +139,17 @@ class InterventionController extends Controller
         unset($validated['technician_id']);
     }
 
-    // نحتافظو بالـ status القديم
     $oldStatus = $intervention->status;
 
     $intervention->update($validated);
 
-    // إذا ولات intervention completed لأول مرة
     if (
         $oldStatus !== 'completed' &&
         $intervention->status === 'completed'
     ) {
-        // نجيب maintenance باش نعرفو equipment
+
         $intervention->load('maintenance');
 
-        // نبحثو على آخر demande ديال نفس equipment
         $demand = Demand::where(
             'equipment_id',
             $intervention->maintenance->equipment_id
@@ -162,7 +157,6 @@ class InterventionController extends Controller
         ->latest()
         ->first();
 
-        // إذا لقينا demande
         if ($demand) {
             Alert::create([
                 'user_id' => $demand->user_id,

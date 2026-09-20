@@ -51,7 +51,6 @@ public function store(Request $request)
         'status' => 'pending',
     ]);
 
-    // 🔔 Alerter tous les administrateurs
     $admins = User::where('role', 'admin')->get();
 
     foreach ($admins as $admin) {
@@ -149,7 +148,6 @@ public function assignTechnician(Request $request, string $id)
         'status' => 'assigned',
     ]);
 
-    // 🔔 Alerte pour le personnel qui a créé la demande
     Alert::create([
         'user_id' => $demand->user_id,
         'equipment_id' => $demand->equipment_id,
@@ -158,7 +156,6 @@ public function assignTechnician(Request $request, string $id)
         'isRead' => false,
     ]);
 
-    // 🔔 Alerte pour le technicien
     Alert::create([
         'user_id' => $demand->technician_id,
         'equipment_id' => $demand->equipment_id,
