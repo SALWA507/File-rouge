@@ -1,13 +1,11 @@
-
 import { useEffect, useState } from "react";
-import { Bell, Check } from "lucide-react";
+import { Bell, Check, Trash2 } from "lucide-react";
 import api from "../../api";
 
 function Alerts() {
     // =========================
     // USER CONNECTÉ
     // =========================
-
     const storedUser = localStorage.getItem("user");
     const user = storedUser ? JSON.parse(storedUser) : null;
     const role = user?.role;
@@ -15,7 +13,6 @@ function Alerts() {
     // =========================
     // STATES
     // =========================
-
     const [alerts, setAlerts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -23,7 +20,6 @@ function Alerts() {
     // =========================
     // GET ALERTS
     // =========================
-
     const fetchAlerts = async () => {
         try {
             setLoading(true);
@@ -37,7 +33,7 @@ function Alerts() {
 
             setError(
                 err.response?.data?.message ||
-                "Erreur lors du chargement des alertes"
+                    "Erreur lors du chargement des alertes"
             );
         } finally {
             setLoading(false);
@@ -51,16 +47,15 @@ function Alerts() {
     // =========================
     // MARK AS READ
     // =========================
-
-    const markAsRead = async (alert) => {
+    const markAsRead = async (alertItem) => {
         try {
-            await api.put(`/alerts/${alert.id}`, {
+            await api.put(`/alerts/${alertItem.id}`, {
                 isRead: true,
             });
 
             setAlerts((prevAlerts) =>
                 prevAlerts.map((item) =>
-                    item.id === alert.id
+                    item.id === alertItem.id
                         ? { ...item, isRead: true }
                         : item
                 )
@@ -68,9 +63,40 @@ function Alerts() {
         } catch (err) {
             console.error(err);
 
-            alert(
+            setError(
                 err.response?.data?.message ||
-                "Erreur lors de la modification de l'alerte"
+                    "Erreur lors de la modification de l'alerte"
+            );
+        }
+    };
+
+    // =========================
+    // DELETE ALERT
+    // ADMIN SEULEMENT
+    // =========================
+    const deleteAlert = async (alertItem) => {
+        const confirmed = window.confirm(
+            "Voulez-vous vraiment supprimer cette alerte ?"
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            await api.delete(`/alerts/${alertItem.id}`);
+
+            setAlerts((prevAlerts) =>
+                prevAlerts.filter(
+                    (item) => item.id !== alertItem.id
+                )
+            );
+        } catch (err) {
+            console.error(err);
+
+            setError(
+                err.response?.data?.message ||
+                    "Erreur lors de la suppression de l'alerte"
             );
         }
     };
@@ -78,7 +104,6 @@ function Alerts() {
     // =========================
     // LOADING
     // =========================
-
     if (loading) {
         return (
             <div className="p-6">
@@ -92,12 +117,9 @@ function Alerts() {
     // =========================
     // PAGE
     // =========================
-
     return (
         <div className="p-6">
-
             {/* HEADER */}
-
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h1 className="text-2xl font-bold text-[#172033]">
@@ -120,7 +142,6 @@ function Alerts() {
             </div>
 
             {/* ERROR */}
-
             {error && (
                 <div className="mb-4 p-4 rounded-lg bg-red-50 text-red-600">
                     {error}
@@ -128,7 +149,6 @@ function Alerts() {
             )}
 
             {/* EMPTY */}
-
             {alerts.length === 0 ? (
                 <div className="bg-white rounded-xl border border-gray-200 p-10 text-center">
                     <Bell
@@ -142,23 +162,19 @@ function Alerts() {
                 </div>
             ) : (
                 <div className="space-y-4">
-
-                    {alerts.map((alert) => (
+                    {alerts.map((alertItem) => (
                         <div
-                            key={alert.id}
+                            key={alertItem.id}
                             className={`bg-white border rounded-xl p-5 ${
-                                alert.isRead
+                                alertItem.isRead
                                     ? "border-gray-200"
                                     : "border-[#13B8B0]/40 bg-[#13B8B0]/5"
                             }`}
                         >
-
                             <div className="flex items-start justify-between gap-4">
 
                                 {/* ALERT INFO */}
-
                                 <div className="flex gap-4">
-
                                     <div className="w-10 h-10 rounded-full bg-[#13B8B0]/10 flex items-center justify-center flex-shrink-0">
                                         <Bell
                                             size={20}
@@ -167,60 +183,79 @@ function Alerts() {
                                     </div>
 
                                     <div>
-
                                         <div className="flex items-center gap-2 mb-1">
-
                                             <h2 className="font-semibold text-[#172033]">
-                                                {alert.type}
+                                                {alertItem.type}
                                             </h2>
 
-                                            {!alert.isRead && (
+                                            {!alertItem.isRead && (
                                                 <span className="text-xs px-2 py-1 rounded-full bg-[#13B8B0] text-white">
                                                     Nouveau
                                                 </span>
                                             )}
-
                                         </div>
 
                                         <p className="text-gray-600">
-                                            {alert.message}
+                                            {alertItem.message}
                                         </p>
 
-                                        {alert.equipment && (
+                                        {alertItem.equipment && (
                                             <p className="text-sm text-gray-400 mt-2">
                                                 Équipement :{" "}
-                                                {alert.equipment.name}
+                                                {alertItem.equipment.name}
                                             </p>
                                         )}
 
-                                        {role === "admin" && alert.user && (
-                                            <p className="text-sm text-gray-400 mt-1">
-                                                Destinataire :{" "}
-                                                {alert.user.name}
-                                            </p>
-                                        )}
-
+                                        {role === "admin" &&
+                                            alertItem.user && (
+                                                <p className="text-sm text-gray-400 mt-1">
+                                                    Destinataire :{" "}
+                                                    {alertItem.user.name}
+                                                </p>
+                                            )}
                                     </div>
                                 </div>
 
-                                {/* MARK AS READ */}
+                                {/* ACTIONS */}
+                                <div className="flex items-center gap-2 flex-shrink-0">
 
-                                {!alert.isRead && (
-                                    <button
-                                        onClick={() => markAsRead(alert)}
-                                        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#13B8B0] text-white hover:opacity-90 transition"
-                                    >
-                                        <Check size={17} />
-                                        <span className="hidden md:inline">
-                                            Marquer comme lu
-                                        </span>
-                                    </button>
-                                )}
+                                    {/* MARQUER COMME LU */}
+                                    {!alertItem.isRead && (
+                                        <button
+                                            onClick={() =>
+                                                markAsRead(alertItem)
+                                            }
+                                            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#13B8B0] text-white hover:opacity-90 transition"
+                                            title="Marquer comme lu"
+                                        >
+                                            <Check size={17} />
 
+                                            <span className="hidden md:inline">
+                                                Marquer comme lu
+                                            </span>
+                                        </button>
+                                    )}
+
+                                    {/* SUPPRIMER - ADMIN SEULEMENT */}
+                                    {role === "admin" && (
+                                        <button
+                                            onClick={() =>
+                                                deleteAlert(alertItem)
+                                            }
+                                            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition"
+                                            title="Supprimer"
+                                        >
+                                            <Trash2 size={17} />
+
+                                            <span className="hidden md:inline">
+                                                Supprimer
+                                            </span>
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     ))}
-
                 </div>
             )}
         </div>
