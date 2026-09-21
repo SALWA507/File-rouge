@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import loginImage from "../assets/login-medical.png";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +9,6 @@ import {
   EyeOff,
   Stethoscope,
 } from "lucide-react";
-
 function Login() {
   const navigate = useNavigate();
 
@@ -23,20 +21,16 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setLoading(true);
     setMessage("");
-
     try {
       const response = await api.post("/login", {
         email,
         password,
       });
 
-   
       localStorage.setItem("token", response.data.token);
 
- 
       localStorage.setItem(
         "user",
         JSON.stringify(response.data.user)
@@ -44,7 +38,6 @@ function Login() {
 
       setMessage("Connexion réussie");
 
-    
       navigate("/dashboard");
 
     } catch (error) {
@@ -64,12 +57,10 @@ function Login() {
   return (
     <div className="min-h-screen bg-white flex">
 
- 
       <div className="flex w-1/2 bg-[#0F7C7C] text-white relative overflow-hidden">
 
         <div className="w-full px-14 py-10 flex flex-col">
 
-        
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
               <Stethoscope size={24} />
@@ -80,13 +71,11 @@ function Login() {
             </h1>
           </div>
 
-         
           <p className="mt-3 text-lg text-white/80 max-w-md leading-7">
             Plateforme de gestion des équipements
             biomédicaux
           </p>
 
-      
           <div className="flex-1 flex items-center justify-center">
             <div className="w-72 h-72 rounded-[35px] bg-white/10 flex items-center justify-center p-8">
               <img
@@ -97,7 +86,6 @@ function Login() {
             </div>
           </div>
 
-         
           <div className="pb-2">
             <h2 className="text-lg font-bold text-[#25BDB5]">
               PRÉCISION & TRAÇABILITÉ
@@ -116,7 +104,6 @@ function Login() {
 
         <div className="w-full max-w-md">
 
-        
           <div className="flex justify-center items-center gap-2 mb-3">
 
             <div className="w-9 h-9 rounded-full bg-[#E6F8F7] flex items-center justify-center">
@@ -132,12 +119,10 @@ function Login() {
 
           </div>
 
-       
           <h3 className="text-center text-xl font-bold text-[#172033] mb-5">
             BIENVENUE SUR BIOMAINTENIX
           </h3>
 
-       
           <form onSubmit={handleSubmit}>
 
             <div className="mb-7">
@@ -180,7 +165,6 @@ function Login() {
 
             </div>
 
-            
             <div className="mb-3">
 
               <label className="block text-base text-[#202020] mb-2">
@@ -217,7 +201,6 @@ function Login() {
                   required
                 />
 
-            
                 <button
                   type="button"
                   onClick={() =>
@@ -243,46 +226,18 @@ function Login() {
 
             </div>
 
-            <div className="flex items-center justify-between mb-5 text-xs">
-
-              <label className="flex items-center gap-2 cursor-pointer">
-
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) =>
-                    setRememberMe(e.target.checked)
-                  }
-                  className="
-                    w-4
-                    h-4
-                    accent-[#13B8B0]
-                  "
-                />
-
-                <span className="text-gray-600">
-                  Se souvenir de moi
-                </span>
-
-              </label>
-
-              <button
-                type="button"
-                className="text-[#13B8B0] hover:underline"
-              >
-                Mot de passe oublié ?
-              </button>
-
-            </div>
-
-            
             {message && (
-              <div className="mb-4 text-center text-sm text-red-500">
+              <div
+                className={`mb-4 text-center text-sm ${
+                  message === "Connexion réussie"
+                    ? "text-green-600"
+                    : "text-red-500"
+                }`}
+              >
                 {message}
               </div>
             )}
 
-         
             <button
               type="submit"
               disabled={loading}
@@ -304,51 +259,6 @@ function Login() {
             </button>
 
           </form>
-
-         
-          <div className="flex items-center gap-5 my-6">
-
-            <div className="flex-1 h-px bg-gray-300"></div>
-
-            <span className="text-sm text-gray-400">
-              ou
-            </span>
-
-            <div className="flex-1 h-px bg-gray-300"></div>
-
-          </div>
-
-          <button
-            type="button"
-            onClick={() => navigate("/register")}
-            className="
-              w-full
-              h-10
-              rounded-lg
-              border
-              border-gray-300
-              text-[#13B8B0]
-              font-medium
-              hover:bg-gray-50
-              transition
-            "
-          >
-            Créer un compte
-          </button>
-
-          <p className="text-center text-xs text-gray-600 mt-5">
-
-            Besoin d'aide?
-
-            <button
-              type="button"
-              className="ml-1 text-[#13B8B0] hover:underline"
-            >
-              Contactez le support
-            </button>
-
-          </p>
-
         </div>
 
       </div>
@@ -358,4 +268,3 @@ function Login() {
 }
 
 export default Login;
-

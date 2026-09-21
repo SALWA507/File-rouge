@@ -7,15 +7,37 @@ use Illuminate\Http\Request;
 
 class MaintenanceController extends Controller
 {
-    public function index()
-    {
+   public function index(Request $request)
+{
+    $user = $request->user();
+
+    if ($user->role === 'admin') {
+
         $maintenances = Maintenance::with([
             'equipment',
             'creator'
         ])->get();
 
-        return response()->json($maintenances);
+    } elseif ($user->role === 'technicien') {
+
+        $maintenances = Maintenance::with([
+            'equipment',
+            'creator'
+        ])
+        ->whereHas('interventions', function ($query) use ($user) {
+            $query->where('technician_id', $user->id);
+        })
+        ->get();
+
+    } else {
+
+        return response()->json([
+            'message' => 'Accès interdit'
+        ], 403);
     }
+
+    return response()->json($maintenances);
+}
 
     public function store(Request $request)
     {
@@ -40,66 +62,116 @@ class MaintenanceController extends Controller
         ], 201);
     }
 
-    public function show(string $id)
-    {
-        $maintenance = Maintenance::with([
-            'equipment',
-            'creator',
-            'interventions'
-        ])->find($id);
+   public function show(Request $request, string $id)
+{
+    $maintenance = Maintenance::with([
+        'equipment',
+        'creator',
+        'interventions'
+    ])->find($id);
 
-        if (!$maintenance) {
+    if (!$maintenance) {
+        return response()->json([
+            'message' => 'Maintenance introuvable'
+        ], 404);
+    }
+
+    $user = $request->user();
+
+    if ($user->role === 'admin') {
+        return response()->json($maintenance);
+    }
+
+    if ($user->role === 'technicien') {
+
+        $hasAccess = $maintenance->interventions()
+            ->where('technician_id', $user->id)
+            ->exists();
+
+        if (!$hasAccess) {
             return response()->json([
-                'message' => 'Maintenance introuvable'
-            ], 404);
+                'message' => 'Accès interdit'
+            ], 403);
         }
 
         return response()->json($maintenance);
     }
 
+    return response()->json([
+        'message' => 'Accès interdit'
+    ], 403);
+}
+
     public function update(Request $request, string $id)
-    {
-        $maintenance = Maintenance::find($id);
+{
+    $maintenance = Maintenance::find($id);
 
-        if (!$maintenance) {
-            return response()->json([
-                'message' => 'Maintenance introuvable'
-            ], 404);
-        }
-
-        $validated = $request->validate([
-            'equipment_id' => 'sometimes|required|exists:equipment,id',
-            'type' => 'sometimes|required|string|max:255',
-            'description' => 'sometimes|required|string',
-            'plannedDate' => 'sometimes|required|date',
-            'status' => 'nullable|string|max:255',
-        ]);
-
-        $maintenance->update($validated);
-
+    if (!$maintenance) {
         return response()->json([
-            'message' => 'Maintenance modifiée avec succès',
-            'maintenance' => $maintenance->load([
-                'equipment',
-                'creator'
-            ]),
-        ]);
+            'message' => 'Maintenance introuvable'
+        ], 404);
     }
 
-    public function destroy(string $id)
-    {
-        $maintenance = Maintenance::find($id);
+    $user = $request->user();
 
-        if (!$maintenance) {
-            return response()->json([
-                'message' => 'Maintenance introuvable'
-            ], 404);
-        }
-
-        $maintenance->delete();
-
+    if ($user->role === 'personnel') {
         return response()->json([
-            'message' => 'Maintenance supprimée avec succès'
-        ]);
+            'message' => 'Accès interdit'
+        ], 403);
     }
+
+    if ($user->role === 'technicien') {
+
+        $hasAccess = $maintenance->interventions()
+            ->where('technician_id', $user->id)
+            ->exists();
+
+        if (!$hasAccess) {
+            return response()->json([
+                'message' => 'Accès interdit'
+            ], 403);
+        }
+    }
+
+    $validated = $request->validate([
+        'equipment_id' => 'sometimes|required|exists:equipment,id',
+        'type' => 'sometimes|required|string|max:255',
+        'description' => 'sometimes|required|string',
+        'plannedDate' => 'sometimes|required|date',
+        'status' => 'nullable|string|max:255',
+    ]);
+
+    $maintenance->update($validated);
+
+    return response()->json([
+        'message' => 'Maintenance modifiée avec succès',
+        'maintenance' => $maintenance->load([
+            'equipment',
+            'creator'
+        ]),
+    ]);
+}
+
+   public function destroy(Request $request, string $id)
+{
+    $maintenance = Maintenance::find($id);
+
+    if (!$maintenance) {
+        return response()->json([
+            'message' => 'Maintenance introuvable'
+        ], 404);
+    }
+
+    if ($request->user()->role !== 'admin') {
+        return response()->json([
+            'message' => 'Accès interdit'
+        ], 403);
+    }
+
+    $maintenance->delete();
+
+    return response()->json([
+        'message' => 'Maintenance supprimée avec succès'
+    ]);
+}
 }
