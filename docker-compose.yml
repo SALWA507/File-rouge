@@ -1,0 +1,38 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: biomaintenix_mysql
+    restart: unless-stopped
+
+    environment:
+      MYSQL_DATABASE: biomaintenix_db
+      MYSQL_ROOT_PASSWORD: root
+
+    ports:
+      - "3310:3306"
+
+    volumes:
+      - biomaintenix_mysql_data:/var/lib/mysql
+
+  backend:
+    build:
+      context: ./backend
+    container_name: biomaintenix_backend
+    restart: unless-stopped
+
+    ports:
+      - "8001:80"
+
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: biomaintenix_db
+      DB_USERNAME: root
+      DB_PASSWORD: root
+
+    depends_on:
+      - mysql
+
+volumes:
+  biomaintenix_mysql_data:
