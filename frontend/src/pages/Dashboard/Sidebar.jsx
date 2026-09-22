@@ -8,6 +8,7 @@ import {
     Users,
     CalendarDays,
     LogOut,
+    User,
 } from "lucide-react";
 
 import { NavLink, useNavigate } from "react-router-dom";
@@ -16,7 +17,6 @@ import api from "../../api";
 
 function Sidebar() {
     const navigate = useNavigate();
-
 
     const storedUser = localStorage.getItem("user");
 
@@ -45,9 +45,7 @@ function Sidebar() {
         }
     };
 
-
     useEffect(() => {
- 
         fetchUnreadAlerts();
 
         const handleAlertsUpdated = () => {
@@ -74,53 +72,68 @@ function Sidebar() {
             icon: LayoutDashboard,
             roles: ["admin", "technicien", "personnel"],
         },
+
         {
             label: "Équipements",
             path: "/equipments",
             icon: Monitor,
             roles: ["admin", "technicien", "personnel"],
         },
+
         {
             label: "Maintenance",
             path: "/maintenance",
             icon: Wrench,
             roles: ["admin", "technicien"],
         },
+
         {
             label: "Interventions",
             path: "/interventions",
             icon: ClipboardList,
             roles: ["admin", "technicien"],
         },
+
         {
             label: "Demandes",
             path: "/demandes",
             icon: Bell,
             roles: ["admin", "technicien", "personnel"],
         },
+
         {
             label: "Alertes",
             path: "/alerts",
             icon: Bell,
             roles: ["admin", "technicien", "personnel"],
         },
+
         {
             label: "Calendrier",
             path: "/calendrier",
             icon: CalendarDays,
             roles: ["admin", "technicien"],
         },
+
         {
             label: "Rapports",
             path: "/rapports",
             icon: FileText,
             roles: ["admin"],
         },
+
         {
             label: "Utilisateurs",
             path: "/users",
             icon: Users,
             roles: ["admin"],
+        },
+
+        {
+            label: "Mon Profil",
+            path: "/profile",
+            icon: User,
+            roles: ["admin", "technicien", "personnel"],
         },
     ];
 
@@ -129,16 +142,16 @@ function Sidebar() {
     );
 
     const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
 
-    navigate("/login");
-};
+        navigate("/login");
+    };
 
     return (
         <aside className="fixed left-0 top-0 z-40 w-64 h-screen bg-white text-gray-800 p-5 border-r border-gray-200 flex flex-col">
 
-
+            {/* Logo */}
             <div className="flex items-center gap-3 mb-10">
                 <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
                     <Monitor
@@ -152,7 +165,9 @@ function Sidebar() {
                 </h1>
             </div>
 
+            {/* Navigation */}
             <nav className="space-y-2 flex-1 overflow-y-auto">
+
                 {visibleMenuItems.map((item) => {
                     const Icon = item.icon;
 
@@ -183,8 +198,10 @@ function Sidebar() {
                         </NavLink>
                     );
                 })}
+
             </nav>
 
+            {/* Logout */}
             <div className="pt-4 mt-4 border-t border-gray-200">
                 <button
                     onClick={handleLogout}
@@ -197,6 +214,7 @@ function Sidebar() {
                     </span>
                 </button>
             </div>
+
         </aside>
     );
 }

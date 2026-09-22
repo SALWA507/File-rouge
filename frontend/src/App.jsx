@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Landing from "./pages/Landing/Landing";
-
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Equipments from "./pages/Equipments/Equipments";
 import Maintenance from "./pages/Maintenance/Maintenance";
@@ -12,6 +11,7 @@ import Calendar from "./pages/Calendar/Calendar";
 import Rapports from "./pages/Rapports/Rapports";
 import Users from "./pages/Users/Users";
 import Alerts from "./pages/Alerts/Alerts";
+import Profile from "./pages/Profile/Profile";
 
 import Layout from "./layouts/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -21,23 +21,17 @@ function App() {
         <BrowserRouter>
             <Routes>
 
-
                 <Route
                     path="/"
                     element={<Landing />}
                 />
-
-               
 
                 <Route
                     path="/login"
                     element={<Login />}
                 />
 
-              
                 <Route element={<Layout />}>
-
-                 
 
                     <Route
                         path="/dashboard"
@@ -54,8 +48,6 @@ function App() {
                         }
                     />
 
-                 
-
                     <Route
                         path="/equipments"
                         element={
@@ -71,8 +63,6 @@ function App() {
                         }
                     />
 
-                
-
                     <Route
                         path="/maintenance"
                         element={
@@ -87,7 +77,6 @@ function App() {
                         }
                     />
 
-
                     <Route
                         path="/interventions"
                         element={
@@ -101,8 +90,6 @@ function App() {
                             </ProtectedRoute>
                         }
                     />
-
-            
 
                     <Route
                         path="/demandes"
@@ -119,7 +106,6 @@ function App() {
                         }
                     />
 
-                 
                     <Route
                         path="/alerts"
                         element={
@@ -135,8 +121,6 @@ function App() {
                         }
                     />
 
-               
-
                     <Route
                         path="/calendrier"
                         element={
@@ -151,13 +135,10 @@ function App() {
                         }
                     />
 
-
                     <Route
                         path="/rapports"
                         element={
-                            <ProtectedRoute
-                                roles={["admin"]}
-                            >
+                            <ProtectedRoute roles={["admin"]}>
                                 <Rapports />
                             </ProtectedRoute>
                         }
@@ -166,16 +147,28 @@ function App() {
                     <Route
                         path="/users"
                         element={
-                            <ProtectedRoute
-                                roles={["admin"]}
-                            >
+                            <ProtectedRoute roles={["admin"]}>
                                 <Users />
                             </ProtectedRoute>
                         }
                     />
 
-                </Route>
+                    <Route
+                        path="/profile"
+                        element={
+                            <ProtectedRoute
+                                roles={[
+                                    "admin",
+                                    "technicien",
+                                    "personnel",
+                                ]}
+                            >
+                                <Profile />
+                            </ProtectedRoute>
+                        }
+                    />
 
+                </Route>
             </Routes>
         </BrowserRouter>
     );
