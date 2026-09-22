@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import {
     Search,
     Plus,
-    Pencil,
     Trash2,
     X,
     Users as UsersIcon,
@@ -385,33 +384,16 @@ function Users() {
                                         </td>
 
                                         <td className="px-6 py-4">
-                                            <div className="flex justify-end gap-2">
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        openEditModal(
-                                                            user
-                                                        )
-                                                    }
-                                                    className="p-2 rounded-lg text-gray-500 hover:text-[#0F7C7C] hover:bg-[#E6F8F7] transition"
-                                                    title="Modifier"
-                                                >
-                                                    <Pencil size={18} />
-                                                </button>
-
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        handleDelete(
-                                                            user.id
-                                                        )
-                                                    }
-                                                    className="p-2 rounded-lg text-gray-500 hover:text-red-600 hover:bg-red-50 transition"
-                                                    title="Supprimer"
-                                                >
-                                                    <Trash2 size={18} />
-                                                </button>
-                                            </div>
+                                            <div className="flex justify-end">
+    <button
+        type="button"
+        onClick={() => handleDelete(user.id)}
+        className="p-2 rounded-lg text-gray-500 hover:text-red-600 hover:bg-red-50 transition"
+        title="Supprimer"
+    >
+        <Trash2 size={18} />
+    </button>
+</div>
                                         </td>
                                     </tr>
                                 ))}
