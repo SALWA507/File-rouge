@@ -129,30 +129,6 @@ Depuis la racine :
 docker compose up -d
 ```
 
----
-
-## Accès
-
-Frontend :
-
-```text
-http://localhost:5175
-```
-
-Backend :
-
-```text
-http://127.0.0.1:8001
-```
-
-API :
-
-```text
-http://127.0.0.1:8001/api
-```
-
----
-
 ## Auteure
 
 **Salwa Amzane**
