@@ -104,13 +104,12 @@ Les diagrammes du projet sont regroupés dans :
 
 ## Diagramme de cas d'utilisation
 
-![Diagramme de cas d'utilisation](docs/diagrams/use-case.png)
+![Diagramme de cas d'utilisation](docs/Diagrams/use-case.png)
 ## Diagramme de classes
 
-![Diagramme de classes](docs/diagrams/class-diagram.png)
-## Diagramme de base de données
-
-![Diagramme de base de données](docs/diagrams/ERD.png)
+![Diagramme de classes](docs/Diagrams/class-diagram.png)
+## Entity Relationship Diagram
+![Entity Relationship Diagram](docs/Diagrams/ERD.png)
 
 ## Installation
 
