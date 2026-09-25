@@ -69,8 +69,16 @@ Backend Laravel
       ↓
      MySQL
 ```
-
 ---
+
+## Docker Hub
+
+Les images Docker du projet sont disponibles sur Docker Hub :
+
+* **Backend Laravel** : [BioMaintenix Backend](https://hub.docker.com/repository/docker/amzane/biomaintenix-backend/general?utm_source=chatgpt.com)
+* **Frontend React** : [BioMaintenix Frontend](https://hub.docker.com/repository/docker/amzane/biomaintenix-frontend/general?utm_source=chatgpt.com)
+
+Les images permettent de déployer séparément le backend Laravel et le frontend React du projet.
 
 ## Structure du projet
 
@@ -128,6 +136,7 @@ Depuis la racine :
 ```bash
 docker compose up -d
 ```
+
 
 ## Auteure
 
